@@ -109,7 +109,7 @@ function player(c,p,time,blessing,traveller='') {
  if(p.dashTime>0){for(let i=4;i>=1;i--){c.globalAlpha=.08+(4-i)*.035;sprite(c,'player',x-p.facing*i*24,y,2,p.facing,false,traveller);c.globalAlpha=1;box(c,x-p.facing*i*28,y-20-(i%2)*10,16,3,'#b8edd3');star(c,x-p.facing*i*22,y-14,i%2?P.gold:P.light,2);}}
  const bob=reducedMotion||p.vy?0:p.vx?Math.floor(Math.sin(time*16)*2):0;
  c.globalAlpha=p.invuln>0?(reducedMotion?.7:Math.floor(time*12)%2?.55:1):1;sprite(c,'player',x,y+bob,2,p.facing,p.invuln>.85,traveller);travellerOrnament(c,traveller,x,y+bob,p.facing,p.invuln>.85);c.globalAlpha=1;heldWeapon(c,p,x,y+bob,time);
- if(p.hitstun>0){box(c,x-28,y-56,8,4,'#ffb0a1');box(c,x+22,y-42,8,4,'#ffb0a1');}
+ if(p.stun>0){box(c,x-28,y-56,8,4,'#ffb0a1');box(c,x+22,y-42,8,4,'#ffb0a1');}
  if(p.vx&&p.y+p.h>=F-.1){box(c,x-p.facing*20,y+2,12,2,'#9bbb91');box(c,x-p.facing*29,y-2,5,3,'#739a81');}
  if(p.attackTime>0){const color=blessing==='fire'?'#ffbc92':blessing==='wood'?'#cfec9f':'#b6f0df';const k=1-p.attackTime/.19,cx=x+p.facing*28,cy=y-28;
  if((p.weapon||'sword')==='sword'){for(let i=0;i<13;i++){const a=-1.3+i*.2,r=44+Math.sin(k*3)*14,xx=cx+p.facing*Math.cos(a)*r,yy=cy+Math.sin(a)*r;box(c,xx,yy,7,7,color);if(i>2&&i<10)box(c,xx-p.facing*7,yy,5,5,P.white);}star(c,cx+p.facing*54,cy-6,P.white,3);}

@@ -15,3 +15,11 @@ Next: retain existing three-weapon/six-character systems, improve weapon feedbac
 Retained sword melee/strong recoil/armorbreak, paper projectiles with status builds and slower staff tracking/splash. Added staff-only,short-lived impact circles that actually pulse damage and slow nearby enemies; maximum3 fields,1.2s lifetime,simulation paused with menus,cleared on death/victory/reset. Character-generated spell projectiles do not create circles,avoiding proc chains. Distinct pixel sword sparks,paper rune bursts and staff impact rings preserve readable hit feedback.
 
 56 model tests and23 browser scenarios passed; production build and project-subpath tests passed. The new tests verify actual staff impacts,other weapon separation,field damage/pause/expiry/caps. All three normal-ability chapter completion tests still pass.
+
+## Stage 3 — six-character combat acceptance
+
+Existing six distinct passives/skills retained,not recreated. Added normal-ability full-chapter validation for all18 character×weapon loadouts; all win with six kills and surviving HP. Existing character/talent tests verify finite rerolls/luck,fifth-hit recoil,abnormal-status scaling,tracking stars/delayed starfall,bounded autonomous summons and rage/shield recoil resistance. Corrected hit-stun spark rendering to read the actual player.stun field instead of nonexistent hitstun.
+
+57 model tests passed; six targeted character/talent/QA/safe-viewport browser cases passed,then the renderer correction passed the four affected character/QA browser cases. Production build and subpath checks passed.
+
+User physical-device report: “橫向正常，沒有裁切”. Model and browser were not specified; this is a real user observation,not a universal iPhone/Android compatibility claim.
