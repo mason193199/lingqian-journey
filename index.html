@@ -6,8 +6,10 @@
     <meta name="theme-color" content="#0e2826" />
     <meta name="description" content="《靈籤小旅》— 穿越靈霧竹林，借五行之力，改寫命籤。可使用鍵盤或手機橫向觸控遊玩的東方奇幻動作冒險。" />
     <title>靈籤小旅 · 靈霧竹林</title>
-    <script type="module" crossorigin src="./assets/index-WKM-NB0e.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-BR6wu7cu.css">
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <script type="module" crossorigin src="./assets/index-DR3QCEiT.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Ckupgw5d.css">
   </head>
   <body>
     <main class="app">
@@ -21,8 +23,9 @@
         <div class="hud" id="hud">
           <div class="player-status"><div class="avatar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" shape-rendering="crispEdges" aria-hidden="true"><path d="M10 1h12v3h6v6h3v12h-3v6h-6v3H10v-3H4v-6H1V10h3V4h6z" stroke="currentColor" stroke-width="2"/><path d="M12 7h8v3h4v12h-4v3h-8v-3H8V10h4z" fill="currentColor"/><path d="M16 7h4v3h4v12h-4v3h-4V16h-4v-6h4z" fill="#173d3b"/><path d="M17 10h3v3h-3z" fill="currentColor"/><path d="M12 19h3v3h-3z" fill="#173d3b"/></svg></div><div><div class="status-caption">小旅人 <span>五行護佑</span></div><div id="health" aria-label="生命值">♥ ♥ ♥ ♥ ♥</div></div></div>
           <div class="journey-status"><span class="hud-label">此行 · 靈霧竹林</span><strong id="stage">循著竹影，向前走</strong></div>
-          <div class="hud-actions"><button type="button" id="sound" aria-label="開關音效" title="開關音效">♪</button><button type="button" data-action="pause" aria-label="暫停遊戲" title="暫停 Esc">Ⅱ</button></div>
+          <div class="hud-actions"><button type="button" id="fullscreen" aria-label="全螢幕" title="全螢幕">全螢幕</button><button type="button" id="sound" aria-label="開關音效" title="開關音效">♪</button><button type="button" data-action="pause" aria-label="暫停遊戲" title="暫停 Esc">Ⅱ</button></div>
         </div>
+        <div class="combat-readout"><div id="weaponhud" aria-label="目前武器"></div><div id="energy" aria-label="靈力"></div><div id="statushud" aria-label="狀態效果"></div></div>
         <div id="blessings" class="active-blessings" aria-label="已獲得祝福"></div>
         <div id="bossbar" class="boss-bar" hidden><div class="boss-caption"><span>竹魄守</span><span>靈霧竹林 · 守關者</span></div><div class="boss-track"><div id="bosshealth"></div></div></div>
         <div id="overlay" class="overlay">
@@ -41,9 +44,11 @@
           <div class="touch-movement"><button type="button" data-action="left" aria-label="向左移動">◀</button><button type="button" data-action="right" aria-label="向右移動">▶</button></div>
           <div class="touch-skills"><button type="button" class="touch-dash" data-action="dash" aria-label="衝刺">衝<span>瞬身</span></button><button type="button" class="touch-jump" data-action="jump" aria-label="跳躍">躍</button><button type="button" class="touch-attack" data-action="attack" aria-label="普通攻擊">符<span>攻擊</span></button></div>
         </div>
+    <div id="rotate-prompt" role="status" aria-live="polite"><div class="rotate-phone" aria-hidden="true">▯ ↻ ▭</div><h1>請將手機旋轉為橫向</h1><p>《靈籤小旅》以橫向冒險為主。<br>關閉手機的直向鎖定後，將手機轉向即可遊玩。</p><small>瀏覽器若不允許鎖定方向，也能手動旋轉。</small></div>
         <div class="screen-corner corner-tl" aria-hidden="true"></div><div class="screen-corner corner-br" aria-hidden="true"></div>
       </section>
       <footer class="game-footer"><div><span class="live-dot"></span> 命運由你書寫 <span class="footer-divider">/</span> 每次啟程，都是新的可能。</div><span>移動 A / D　跳躍 SPACE　攻擊 J　衝刺 K　暫停 ESC</span></footer>
     </main>
+
   </body>
 </html>
