@@ -160,9 +160,9 @@ export function render(output,g,time){
  for(const e of g.enemies||[])if(e.x>cam-150&&e.x<cam+1450)enemy(c,e,time);
  if(g.player){player(c,g.player,time,g.blessing,g.character?.id||'');if(g.build?.evolution){const color=g.build.element==='fire'?'#ffbf8c':g.build.element==='water'?'#b3e9ef':'#dfc7fa';star(c,g.player.x+19+g.player.facing*35,g.player.y+12,color,4);}}
  for(const p of g.projectiles||[]){
-  const hostile=p.hostile!==false,col=hostile?'#e6a29c':p.weapon==='staff'?'#c9b7ed':'#f5d28c';
+  const hostile=p.hostile!==false,col=hostile?'#e6a29c':g.build?.evolution&&p.weapon==='talisman'?'#ffab7c':g.build?.evolution&&p.weapon==='staff'?'#b3e9ef':p.weapon==='staff'?'#c9b7ed':'#f5d28c';
   for(let i=3;i>0;i--){c.globalAlpha=.9-i*.18;box(c,p.x-p.vx*.022*i,p.y-p.vy*.022*i,hostile?4:6,hostile?4:6,col);}c.globalAlpha=1;
-  if(!hostile&&p.weapon==='talisman'){c.save();c.translate(p.x,p.y);c.rotate(Math.atan2(p.vy,p.vx)+Math.sin(time*16)*.18);box(c,-12,-8,24,16,'#654455');box(c,-10,-6,20,12,'#ffe1a0');box(c,-6,-4,3,8,'#b55f72');box(c,-2,-1,9,3,'#b55f72');box(c,3,-4,3,8,'#b55f72');c.restore();}
+  if(!hostile&&p.weapon==='talisman'){c.save();c.translate(p.x,p.y);c.rotate(Math.atan2(p.vy,p.vx)+Math.sin(time*16)*.18);box(c,-12,-8,24,16,'#654455');box(c,-10,-6,20,12,'#ffe1a0');box(c,-6,-4,3,8,'#b55f72');box(c,-2,-1,9,3,'#b55f72');box(c,3,-4,3,8,'#b55f72');if(g.build?.evolution){star(c,-16,0,'#ffad75',3);star(c,-23,-2,'#ffe6b1',2);}c.restore();}
   else if(!hostile){ring(c,p.x,p.y,(p.r||10)+4,'#b5e8dd');diamond(c,p.x,p.y,p.r||10,'#c3afea');diamond(c,p.x,p.y,5,'#e9ffdc');star(c,p.x,p.y,P.white,3);}
   else{diamond(c,p.x,p.y,p.r||8,'#e6a29c');diamond(c,p.x,p.y,(p.r||8)*.55,P.gold);box(c,p.x-1,p.y-1,4,4,P.white);}
  }
