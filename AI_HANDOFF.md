@@ -56,3 +56,10 @@
 每次開工：讀本文件→git status→fetch最新main→讀commit history與diff→確認未完成處。保留他人未整合工作，不reset、不盲目覆蓋、不重做上述七階段。
 
 每一穩定階段：功能→測試→修正→再測試→commit→push→更新交接→下一功能。推送前再次fetch；main前進就整合重測，不force push。額度／時間中斷後從交接斷點續作，未測、未推送、未部署、未實機驗證分開回報。
+
+## v0.4 checkpoint A — input and responsive interface
+- Started from main cb9dd6e; branch v04/integration protects the original draft workspace.
+- Added scoped gesture suppression, physical-key alias tracking, independent multi-pointer releases, slide-out/cancel/lost-capture cleanup; hit-stop edge buffering retained. Page-level zoom remains enabled.
+- Desktop uses bounded 1280px canvas, external player/top panels and Fight/Build/Relic/Journey tabs; phone uses safe-area HUD and paused detail inspector. Existing viewport logic retained.
+- Validation: 83 model tests + existing 30 browser tests + 3 new interface tests passed; production build/path validation passed. No physical iPhone/Android available; browser emulation is not physical Safari proof.
+- Next: combat feedback/posture and 8–12 bounded mechanical synergies, then events/pacing, paged temple, persistent summaries/history. Do not call v0.4 complete at this checkpoint.
