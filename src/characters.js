@@ -1,4 +1,4 @@
-import {applyStatus} from './status.js';
+import {applyStatus,hasStatus} from './status.js';
 
 // Character hooks are opt-in. An unconfigured Game keeps the original chapter rules.
 export const CHARACTERS={
@@ -92,12 +92,15 @@ export function characterKill(g,e){
 }
 export function useSkill(g){
  const c=g.character;if(!c||c.skillCd>0||!['playing','blessing'].includes(g.state)||g.player.hp<=0)return false;
+ if(hasStatus(g.player,'freeze'))return false;
  if(g.state==='blessing'&&c.id!=='aqian')return false;
  if(c.id==='xuanmo'&&c.rage<=0)return false;
  const p=g.player,origin=center(p),targets=alive(g);
  if(c.id==='aqian'){
   c.luckyTime=5;p.luckBonus=.2;if(talent(g,'aqian','b')){p.critMeter=Math.max(1,p.critMeter);c.luckyShieldPending=talent(g,'aqian','b',2);}if(g.state==='blessing')changeChoices(g);aura(g,'blessing');
  }else if(c.id==='qingyue'){
+  // The slash resolves its own targets; its animation must not create a second ordinary swing.
+  g.attackIds=new Set(targets.map(e=>e.id));
   const oldX=p.x;p.x=clamp(p.x+p.facing*170,30,g.wave===0?1120:g.wave===1?2320:3230);p.invuln=Math.max(p.invuln,.38);p.dashTime=.14;p.stun=0;p.attackTime=.19;
   for(const e of targets){const dx=center(e).x-(oldX+p.w/2);if(dx*p.facing>=-35&&dx*p.facing<245&&Math.abs(center(e).y-origin.y)<120){g.damageEnemy(e,42,{knockback:420,direction:p.facing,heavy:true});if(e.hp>0){e.stun=Math.max(e.stun||0,e.type==='boss'?.16:.55);applyStatus(e,'armorbreak',3);}}}aura(g,'critical',p.x+19,p.y+29,.65);
  }else if(c.id==='hongling'){
