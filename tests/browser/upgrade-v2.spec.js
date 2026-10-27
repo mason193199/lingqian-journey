@@ -8,17 +8,17 @@ async function preparation(page){
 
 test('normal title opens preparation, weapon selection and upgrades persist after refresh',async({page})=>{
  await page.goto('/');await page.locator('[data-command=start]').click();await expect(page.locator('.prep-panel')).toBeVisible();
- await page.locator('[data-weapon=staff]').click();
+ await page.locator('[data-hub-tab=weapons]').click();await page.locator('[data-weapon=staff]').click();
  await page.evaluate(key=>{const d=JSON.parse(localStorage.getItem(key));d.jade=100;localStorage.setItem(key,JSON.stringify(d));},SAVE);
- await page.reload();await page.locator('[data-command=start]').click();await page.locator('[data-upgrade=life]').click();
+ await page.reload();await page.locator('[data-command=start]').click();await page.locator('[data-hub-tab=training]').click();await page.locator('[data-upgrade=life]').click();
  let saved=await page.evaluate(key=>JSON.parse(localStorage.getItem(key)),SAVE);expect(saved.selectedWeapon).toBe('staff');expect(saved.upgrades.life).toBe(1);expect(saved.jade).toBeLessThan(100);
- await page.reload();await page.locator('[data-command=start]').click();await expect(page.locator('[data-weapon=staff]')).toHaveAttribute('aria-pressed','true');
+ await page.reload();await page.locator('[data-command=start]').click();await page.locator('[data-hub-tab=weapons]').click();await expect(page.locator('[data-weapon=staff]')).toHaveAttribute('aria-pressed','true');
  await page.locator('[data-command=start-run]').click();await expect(page.locator('#weaponhud')).toContainText('靈杖');await expect(page.locator('#health')).toContainText('104');
 });
 
 test('all three prepared weapons become real equipment with distinct attack behavior',async({page})=>{
  for(const weapon of ['sword','talisman','staff']){
-  await preparation(page);await page.locator(`[data-weapon=${weapon}]`).click();await page.locator('[data-command=start-run]').click();
+  await preparation(page);await page.locator('[data-hub-tab=weapons]').click();await page.locator(`[data-weapon=${weapon}]`).click();await page.locator('[data-command=start-run]').click();
   expect(await page.evaluate(()=>window.__game.player.weapon)).toBe(weapon);
   await page.evaluate(()=>{const g=window.__game;g.enemies.forEach(e=>e.x=900);});
   await page.keyboard.press('j');

@@ -1,3 +1,4 @@
+import {RULE_FATES,CODEX,cleanDiscoveries,cleanHistory,cleanSummary} from './progression.js';
 // Versioned, bounded, local-only progression. Storage failures never block play.
 export const STORAGE_KEY='lingqian-journey.meta.v2';
 const BACKUP_KEY=STORAGE_KEY+'.backup';
@@ -7,16 +8,16 @@ export const UPGRADE_INFO={
  life:{name:'生命修行',description:'每級初始生命 +4，最多 +20。',cap:5,baseCost:6,costStep:4},
  spirit:{name:'靈力修行',description:'每級靈力上限 +10，最多 +30。',cap:3,baseCost:8,costStep:5},
  mastery:{name:'武器精通',description:'指定武器基礎傷害每級 +3%，最多 +9%。',cap:3,baseCost:8,costStep:6},
- fate:{name:'命格',description:'解鎖開局護盾／短暫霸體二選一，不疊加。',cap:1,baseCost:12,costStep:0},
+ fate:{name:'命格',description:'解鎖貪狼／天機／七殺規則，以及開局護盾／霸體二選一。',cap:1,baseCost:12,costStep:0},
  relic:{name:'法器欄',description:'解鎖靈息（靈力 +10）／青玉（生命 +4）二選一。',cap:1,baseCost:16,costStep:0}
 };
 for(const info of Object.values(UPGRADE_INFO))info.max=info.cap;
-const fresh=()=>({version:2,jade:0,unlockedWeapons:[...WEAPON_IDS],selectedWeapon:'sword',unlockedCharacters:[...CHARACTER_IDS],selectedCharacter:'aqian',talentUnlocks:Object.fromEntries(CHARACTER_IDS.map(id=>[id,{a:0,b:0}])),selectedBranches:Object.fromEntries(CHARACTER_IDS.map(id=>[id,'none'])),upgrades:{life:0,spirit:0,fate:0,relic:0},mastery:{sword:0,talisman:0,staff:0},settings:{sound:false,reducedMotion:false},loadout:{fate:'none',relic:'none'},firstWin:false,settledRuns:[]});
+const fresh=()=>({version:3,ruleFate:'none',history:[],discoveries:cleanDiscoveries(),jade:0,unlockedWeapons:[...WEAPON_IDS],selectedWeapon:'sword',unlockedCharacters:[...CHARACTER_IDS],selectedCharacter:'aqian',talentUnlocks:Object.fromEntries(CHARACTER_IDS.map(id=>[id,{a:0,b:0}])),selectedBranches:Object.fromEntries(CHARACTER_IDS.map(id=>[id,'none'])),upgrades:{life:0,spirit:0,fate:0,relic:0},mastery:{sword:0,talisman:0,staff:0},settings:{sound:false,reducedMotion:false},loadout:{fate:'none',relic:'none'},firstWin:false,settledRuns:[]});
 const integer=(n,min,max)=>Number.isFinite(n)?Math.max(min,Math.min(max,Math.floor(n))):min;
 function sanitize(value){
  if(!value||typeof value!=='object'||Array.isArray(value)||!('jade'in value))return null;
- if(value.version!=null&&![1,2].includes(value.version))return null;
- const out=fresh();out.jade=integer(value.jade,0,1000000);
+ if(value.version!=null&&![1,2,3].includes(value.version))return null;
+ const out=fresh();out.history=cleanHistory(value.history);out.discoveries=cleanDiscoveries(value.discoveries);out.jade=integer(value.jade,0,1000000);
  // All three starting weapons remain available; future unlock ids are never trusted.
  out.selectedWeapon=WEAPON_IDS.includes(value.selectedWeapon)?value.selectedWeapon:'sword';
  out.selectedCharacter=CHARACTER_IDS.includes(value.selectedCharacter)?value.selectedCharacter:'aqian';
@@ -28,6 +29,7 @@ function sanitize(value){
  out.settledRuns=Array.isArray(value.settledRuns)?[...new Set(value.settledRuns.filter(id=>typeof id==='string'&&id.length>0&&id.length<=120))].slice(-20):[];
  if(out.upgrades.fate&&['shield','unstoppable'].includes(value.loadout?.fate))out.loadout.fate=value.loadout.fate;
  if(out.upgrades.relic&&['energy','vitality'].includes(value.loadout?.relic))out.loadout.relic=value.loadout.relic;
+ if(out.upgrades.fate&&Object.hasOwn(RULE_FATES,value.ruleFate))out.ruleFate=value.ruleFate;
  return out;
 }
 function parse(text){try{return sanitize(JSON.parse(text));}catch{return null;}}
@@ -63,11 +65,12 @@ export class MetaStore{
   this.data.loadout={fate,relic};this.save();return true;
  }
  setSetting(name,value){if(!['sound','reducedMotion'].includes(name)||typeof value!=='boolean')return false;this.data.settings[name]=value;this.save();return true;}
- settleRun({id,kills=0,won=false}={}){
+ settleRun({id,kills=0,won=false,summary}={}){
   if(typeof id!=='string'||id.length===0||id.length>120||this.data.settledRuns.includes(id))return 0;
   const victory=won===true;const reward=integer(kills,0,1000)*2+(victory?10:0)+(victory&&!this.data.firstWin?10:0);
   this.data.jade=integer(this.data.jade+reward,0,1000000);if(victory)this.data.firstWin=true;
-  this.data.settledRuns=[...this.data.settledRuns,id].slice(-20);this.save();return reward;
+  this.data.settledRuns=[...this.data.settledRuns,id].slice(-20);const result={...cleanSummary({...summary,kills,won,jade:reward}),id,at:Date.now()};this.data.history=[...this.data.history,result].slice(-10);this.lastUnlocks=[];const found={enemies:result.enemies,relics:result.relics,evolutions:result.evolution?[result.evolution]:[],events:result.events,blessings:result.blessings,synergies:result.synergies};for(const [key,values]of Object.entries(found))for(const item of values)if(!this.data.discoveries[key].includes(item)){this.data.discoveries[key].push(item);this.lastUnlocks.push(CODEX[key].entries[item]);}this.save();return reward;
  }
- runOptions(){const d=this.data;const branch=d.selectedBranches[d.selectedCharacter];const talent=branch==='a'||branch==='b'?{branch,level:d.talentUnlocks[d.selectedCharacter][branch]}:null;return {character:d.selectedCharacter,talent,weapon:d.selectedWeapon,maxHpBonus:d.upgrades.life*4+(d.loadout.relic==='vitality'?4:0),damageBonus:d.mastery[d.selectedWeapon]*.03,energyBonus:d.upgrades.spirit*10+(d.loadout.relic==='energy'?10:0),startingStatus:d.loadout.fate==='none'?null:d.loadout.fate};}
+ selectRuleFate(id){if(!Object.hasOwn(RULE_FATES,id)||id!=='none'&&!this.data.upgrades.fate)return false;this.data.ruleFate=id;this.save();return true;}
+ runOptions(){const d=this.data;const branch=d.selectedBranches[d.selectedCharacter];const talent=branch==='a'||branch==='b'?{branch,level:d.talentUnlocks[d.selectedCharacter][branch]}:null;return {...(d.ruleFate!=='none'?{ruleFate:d.ruleFate}:{}),character:d.selectedCharacter,talent,weapon:d.selectedWeapon,maxHpBonus:d.upgrades.life*4+(d.loadout.relic==='vitality'?4:0),damageBonus:d.mastery[d.selectedWeapon]*.03,energyBonus:d.upgrades.spirit*10+(d.loadout.relic==='energy'?10:0),startingStatus:d.loadout.fate==='none'?null:d.loadout.fate};}
 }

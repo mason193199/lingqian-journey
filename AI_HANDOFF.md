@@ -76,3 +76,11 @@
 - Temporary combat penalties expire by battles (not service rooms), future enemy tempo/damage changes are capped, challenges return to event/relic reward before selecting the next route.
 - Validation: 98 model tests passed; updated full normal adventure and route/shop browser tests + all-six-event UI acceptance passed. Production build/subpath/standalone smoke passed.
 - Next incomplete: temple pages, rule fates, bounded discovery/history migration, full run summary, final regression/performance/deployment.
+
+## v0.4 checkpoint D — temple, rule fates and persistent run loop
+- Temple is split into six regions: character/talent, weapon/recipe, capped training, rule fate/loadout, discovery codex, recent-ten-run observatory. Only the selected region enters the DOM; phone region navigation and sticky start action tested at 667x320.
+- Three actual rule fates: Greedy adds an elite and better relic rooms, Oracle gives any character a finite reroll/four initial choices, Seven reduces starting HP20% and increases Boss damage20%. Existing starting shield/unstoppable options retained independently.
+- End Build card includes character/start weapon/evolution/elements/bagua/relic/synergy/time/kills/Boss/highest damage/damage taken/jade/discoveries. Statistics use actual HP lost, excluding shields and overkill. History capped at ten.
+- Local schema upgraded to v3 while retaining the existing v2 storage key and backup; v1/v2 saves migrate and preserve all prior progression/settings. Untrusted discovery/history IDs are bounded and validated before rendering. Settlement deduplication retained.
+- Validation: 105 model tests + 35 browser regression tests + 3 new temple/history browser tests passed. Production build/subpath/standalone smoke passed.
+- Next: full combined synergy stress, final 38+ browser regression, visual inspection, release version/docs, safe integration into current main, push and Pages deployment. Physical mobile Safari/Android remains unavailable in this environment.
