@@ -23,3 +23,11 @@ Existing six distinct passives/skills retained,not recreated. Added normal-abili
 57 model tests passed; six targeted character/talent/QA/safe-viewport browser cases passed,then the renderer correction passed the four affected character/QA browser cases. Production build and subpath checks passed.
 
 User physical-device report: “橫向正常，沒有裁切”. Model and browser were not specified; this is a real user observation,not a universal iPhone/Android compatibility claim.
+
+## Stage 4 — pixel traveller selection and v0.2 release
+
+Six cached portraits reuse actual in-game sprites,palettes,ornaments and recommended held weapons. Preparation shows full name,role,passive,active skill,cooldown,recommended weapon and play guide. Recommendations never restrict weapon choice. Preparation preserves scroll position when changing loadout/upgrades. Selection persists and the next Run uses that character.
+
+Final acceptance:57 model tests,24 browser scenarios,production build and all three production smoke targets passed. All18 traveller×weapon loadouts complete the chapter using normal abilities. Portrait test verifies six distinct rendered canvases plus guide content,persistence and actual run assignment. Phone screenshot was visually inspected; portrait cards and pinned start action remain inside safe bounds with scrolling for further content.
+
+Scope remains v0.2 combat and selection only. No evolution,relic gameplay,merchant,tribulation,large room branching or chapter2 integration was performed. Original uncommitted evolution work remains in the primary checkout untouched. The existing limited starting-stat relic configuration remains as previously shipped.

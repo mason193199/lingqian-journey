@@ -173,3 +173,13 @@ export function render(output,g,time){
  for(let i=0;i<20;i++){const x=(i*193+time*(5+i%3))%W,y=180+(i*91)%350+Math.sin(time+i)*10;c.globalAlpha=.35+Math.sin(time+i)*.15;star(c,x,y,i%3?P.light:P.gold,2);}c.globalAlpha=1;
  output.save();output.imageSmoothingEnabled=false;output.clearRect(0,0,W,H);const shake=!reducedMotion&&g.shake>0?2:0;const dx=shake?Math.round(Math.sin(time*83)*shake)*2:0,dy=shake?Math.round(Math.cos(time*71)*shake):0;output.fillStyle=P.dark;output.fillRect(0,0,W,H);output.drawImage(surface,dx,dy,W,H);output.restore();
 }
+
+// Reuse the actual in-game traveller sprite, palette, ornament and held weapon.
+// Portraits are painted only when preparation changes, never every game frame.
+export function renderPortrait(context,id,weapon='sword'){
+ const {width,height}=context.canvas;context.clearRect(0,0,width,height);context.imageSmoothingEnabled=false;
+ context.fillStyle='#15383c';context.fillRect(0,0,width,height);
+ context.save();context.globalAlpha=.22;bagua(context,width/2,height/2,Math.min(width,height)*.4,0);context.restore();
+ context.save();context.translate(width/2-38,height-122);context.scale(2,2);
+ player(context,{x:0,y:0,w:38,h:58,weapon,facing:1,vx:0,vy:0,invuln:0,attackTime:0,dashTime:0,stun:0,statuses:[]},0,null,id);context.restore();
+}
