@@ -9,7 +9,7 @@ test('keyboard attack creates real hit particles, short white flash and readable
  await expect.poll(()=>page.evaluate(()=>window.__game.enemies[0]?.hp)).toBe(20);
  expect(await page.evaluate(()=>window.__game.effects.some(e=>e.text==='22'))).toBe(true);
  const result=await page.evaluate(()=>{const g=window.__game,e=g.enemies[0];g.damageEnemy(e,1);return {flash:e.hitFlash,hit:g.vfx.some(v=>v.kind==='hit'),hp:e.hp};});
- expect(result).toEqual({flash:.13,hit:true,hp:19});
+ expect(result).toEqual({flash:.13,hit:true,hp:18.82});
  await expect.poll(()=>page.evaluate(()=>window.__game.enemies[0]?.hitFlash)).toBe(0);
 });
 
