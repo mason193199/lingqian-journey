@@ -17,8 +17,11 @@
         <div class="header-right"><span class="chapter-label">第一章 <i></i> 靈霧竹林</span><span class="edition">像素靈境 · 壹</span></div>
       </header>
       <section class="game-shell" aria-label="靈籤小旅遊戲">
+        <div id="world-layer" aria-hidden="false">
         <canvas id="game" width="1280" height="720" aria-label="遊戲畫面：使用 A D 移動、空白鍵跳躍、J 攻擊、K 衝刺" tabindex="0"></canvas>
         <div class="game-vignette" aria-hidden="true"></div>
+        </div>
+        <div id="hud-layer">
         <div class="hud" id="hud">
           <div class="player-status"><div class="avatar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" shape-rendering="crispEdges" aria-hidden="true"><path d="M10 1h12v3h6v6h3v12h-3v6h-6v3H10v-3H4v-6H1V10h3V4h6z" stroke="currentColor" stroke-width="2"/><path d="M12 7h8v3h4v12h-4v3h-8v-3H8V10h4z" fill="currentColor"/><path d="M16 7h4v3h4v12h-4v3h-4V16h-4v-6h4z" fill="#173d3b"/><path d="M17 10h3v3h-3z" fill="currentColor"/><path d="M12 19h3v3h-3z" fill="#173d3b"/></svg></div><div><div class="status-caption">小旅人 <span>五行護佑</span></div><div id="health" aria-label="生命值">♥ ♥ ♥ ♥ ♥</div></div></div>
           <div class="journey-status"><span class="hud-label">此行 · 靈霧竹林</span><strong id="stage">循著竹影，向前走</strong></div>
@@ -42,6 +45,7 @@
         <div class="touch-controls" aria-label="觸控操作">
           <div class="touch-movement"><button type="button" data-action="left" aria-label="向左移動">◀</button><button type="button" data-action="right" aria-label="向右移動">▶</button></div>
           <div class="touch-skills"><button type="button" class="touch-dash" data-action="dash" aria-label="衝刺">衝<span>瞬身</span></button><button type="button" class="touch-jump" data-action="jump" aria-label="跳躍">躍</button><button type="button" class="touch-attack" data-action="attack" aria-label="普通攻擊">符<span>攻擊</span></button></div>
+        </div>
         </div>
     <div id="rotate-prompt" role="status" aria-live="polite"><div class="rotate-phone" aria-hidden="true">▯ ↻ ▭</div><h1>請將手機旋轉為橫向</h1><p>《靈籤小旅》以橫向冒險為主。<br>關閉手機的直向鎖定後，將手機轉向即可遊玩。</p><small>瀏覽器若不允許鎖定方向，也能手動旋轉。</small></div>
         <div class="screen-corner corner-tl" aria-hidden="true"></div><div class="screen-corner corner-br" aria-hidden="true"></div>
