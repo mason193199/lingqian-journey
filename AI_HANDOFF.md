@@ -1,56 +1,47 @@
-# AI 開發交接
+# AI 開發交接 — v0.2
 
-## 本輪 v0.2 續作狀態（優先於下方舊計畫）
+日期：2026-10-27。
 
-- 階段1：已重新部署已測 main f8aa5b3；Git讀回版本與產物雜湊一致，詳見 docs/V02_VALIDATION.md。實體裝置與公開CDN仍待驗證，不能宣稱已完成實機測試。
-- 階段2完成：三武器差異保留並補上靈杖留場控場星陣、獨立命中特效；56項邏輯、23項瀏覽器與正式版測試通過。
-- 階段3完成：六角色實際被動／技能保留，18種角色×武器組合全部正常能力通關；57項邏輯與針對性瀏覽器測試通過。已收到使用者「橫向正常，沒有裁切」實機回報，未提供型號／瀏覽器。
-- 下一步：完成像素立繪、定位、推薦武器與玩法說明的角色選擇介面。
-- 法器、靈商、天劫、大型房間分岔、第二章留待 v0.3；原未提交的進化工作本輪不帶入。
-- 每階段測試、修正、再測試後 commit + push；開工先 fetch main、讀最新交接。
+## 穩定版本與已完成階段
 
+- 最新已驗證的穩定程式碼：`bdaaa26`（完整 SHA 可用 `git rev-parse bdaaa26` 取得）。本文件後續提交僅更新交接；遠端最新提交以 `git log -1 origin/main` 為準。
+- `8492367`：重新部署 QA 穩定版 f8aa5b3，Git讀回 version.json 與 HTML hash 相符；記錄裝置驗證限制。
+- `8d6b928`：三武器命中特效差異與靈杖短暫留場星陣，最多3個，會暫停、到期、死亡／勝利／重開清除。
+- `6920378`：六角色與18種角色×武器正常能力通關驗收，修正受擊火花讀取 stun 欄位。
+- `bdaaa26`：角色選擇加入六張不同像素立繪、名稱、定位、被動、主動／冷卻、推薦武器與玩法說明。選擇保存並正確套用；推薦不限制裝備，選單保留捲動位置。package版本0.2.0。
+- 之前整合的 QA 修正仍保留：青嶽首次斬煞崩潰／重複傷害、冰凍技能限制、hit-stop 短按緩衝與暫停清除。
 
-## 最新穩定階段
+## 最終測試
 
-- 日期：2026-10-27。
-- 最新已驗證的穩定程式碼提交：`2b45863e06b5d826fac4db08a055224285f71a9e`。
-- 本文件後續提交僅記錄交接，沒有更動上述已測試程式碼。遠端實際最新提交以 `git log -1 origin/main` 為準。
-- 已審查整合 QA 分支 `qa/mobile-combat-stability`，來源 `1eef1ee6fbad06407911ab967fb238ea5c3d2f08`。整合前 main 為 `561eda896e5003fb754c957068a4567b2ca8bffe`，無衝突；保留兩個 parent 的合併歷史。
+- `npm test`：57項邏輯測試通過，包含全部18種角色×武器通關。
+- Playwright：24項情境通過；使用獨立5191伺服器且不重用其他工程師的server，避免誤測。
+- `npm run build` 與 `npm run test:production` 通過，含桌面、手機橫向模擬、GitHub Pages子路徑及單檔HTML。
+- `git diff --check` 通過。像素立繪手機畫面已檢視。
+- 來源、各階段範圍與測試細節：`docs/V02_VALIDATION.md`；QA歷史：`docs/QA-REVIEW.md`。
 
-## 本輪修正與審查結論
+## 部署與裝置結果
 
-1. 青嶽斬煞會設定攻擊動畫，但首次施放尚未建立普攻命中集合，可能在下一幀崩潰。技能自行結算過的既有目標不再被同一段動畫當作普攻重複命中。
-2. 六角色技能在冰凍期間拒絕施放，不消耗冷卻，解凍後可正常使用。保留青嶽既有的硬直取消能力，沒有擴大為全面改寫控制規則。
-3. hit-stop 暫停模擬時保留一次性的輸入邊緣，直到模擬執行後才清除。離開遊玩／暫停時仍清除輸入，避免恢復後誤操作。
-4. 審查後未發現需要改寫 QA 修正的問題。額外增加瀏覽器測試，涵蓋 hit-stop 下的跳躍、攻擊、技能，以及暫停清除待處理輸入。
+- 網址：https://mason193199.github.io/lingqian-journey/
+- 使用 `npm run deploy:pages` 或先建置後 `node scripts/deploy-pages.mjs`。部署分支為gh-pages，version.json標記來源commit。發佈後應用Git fetch讀回版本及產物hash確認上傳正確。
+- 雲端代理阻擋 github.io（CONNECT403），不能宣稱已驗證公開CDN的HTTP回應。Git讀回驗證僅證明已上傳的部署分支。
+- 使用者已實機回報：「橫向正常，沒有裁切」。未提供型號或瀏覽器，不得延伸為全部iPhone Safari、Android、Edge皆實機通過。
+- 自動測試涵蓋多手機尺寸、直向提示、安全區、不對稱瀏海、visualViewport位移與工具列縮放、全螢幕fallback及超寬桌面。實體Safari／Android、獨立Edge binary、低階手機效能仍待驗證。
+- 本地存檔仍使用原localStorage key，沒有重置局外進度，亦沒有雲端同步。
 
-沒有更動傷害平衡、存檔格式、依賴或關卡架構。原 QA 詳細紀錄在 `docs/QA-REVIEW.md`。
+## 下一階段 v0.3（本輪未開始）
 
-## 驗證結果
+先審查與完成武器×五行×八卦的質變進化，再考慮小規模房間分岔與法器，之後才是靈商、天劫等。不要一次塞入多個半成品。
 
-- `npm test`：54 項邏輯測試全部通過。
-- Playwright：23 項瀏覽器情境全部通過，包括完整鍵盤通關、手機多指、六角色、天賦、存檔、狀態控制、Boss、viewport offset／非對稱安全區、工具列尺寸變化。
-- `npm run build`：production build 成功。
-- `npm run test:production`：桌面、手機橫向模擬、專案子路徑與單檔 HTML 測試通過。
-- `git diff --check`：通過。
-- 整合測試使用本 checkout 的獨立 Vite 5191，`reuseExistingServer:false`，避免誤測其他工程師的伺服器。臨時設定不依賴進版；之後測試務必確認伺服器來源。
-- 真實 iPhone Safari、Android 及低階手機效能仍未實機驗證，不能以 Chromium 模擬代替。
+main尚未整合真正的進化、獨立遊玩法器、靈商、天劫、大型房間分岔、第二章。既有法器欄僅是舊版有限開局配置，不可冒稱完整Relic系統。
 
-## 下一個開發階段與未完成工作
+原目錄 `/workspace/lingqian-journey` 的未提交進化工作仍保留，涉及 game/main/render/style，以及新 evolution.js 和對應瀏覽器測試；本輪未碰觸或帶入。整合前必須比對與最新main的QA輸入／技能修正，不能盲目覆蓋。
 
-本輪只處理 QA 整合，尚未開始新的大型功能。下一階段先完成並審查「武器 × 五行 × 八卦進化」，再依既定順序進入法器、房間分岔、靈商、天劫、靈籤觀。
+本輪可用乾淨續作checkout為 `/workspace/lingqian-journey-qa` 的 `v02/core-combat` 分支；穩定階段都已推送main。
 
-目前 main 已有六角色、兩分支天賦、三武器、共用狀態、輕度局外成長與本地存檔。真正的進化、獨立遊玩法器、分岔房間、靈商、天劫與完整基地未整合，不能回報為已完成。
+## 中斷續作與協作規則
 
-原工作目錄 `/workspace/lingqian-journey` 存在尚未提交的進化工作：`src/game.js`、`src/main.js`、`src/render.js`、`style.css`、新檔 `src/evolution.js` 與 `tests/browser/evolution.spec.js`。本輪保留原樣，未帶入 main，也未刪除。請先比對原工作基底與本輪 main 中的輸入／技能修正，再逐檔整合；不要直接 reset、覆蓋或盲目套用。
-
-本輪整合 checkout 為 `/workspace/lingqian-journey-qa`。沒有部署或修改 gh-pages；main 的整合成功不等於公開網站已更新。
-
-## 斷點續作規則（每次開工必讀）
-
-1. 先讀 `AI_HANDOFF.md`，檢查 `git status --short`、fetch 遠端 main、讀最新 commit 與差異；不得假設本機 HEAD 或舊對話是最新狀態。
-2. 保留其他工程師的未提交／未整合工作，先確認檔案所有權與目前基底，再修改。
-3. 從這份交接的「未完成工作」繼續，不重做已完成的六角色、天賦或 QA 修正。
-4. 每完成一個穩定階段：**測試 → 修正 → 再測試 → commit → push**，並更新交接，記錄 commit、測試、限制與下一步。
-5. 推送前再次 fetch，若 main 有新提交，先整合與重測；不 force push main。
-6. 若額度或時間中斷，下次先重新讀取 repository 最新 commit 與交接紀錄，從未完成處續作，不把未測試／未推送工作當作完成。
+1. 每次先讀本文件、`git status --short`、fetch main與最新commit／diff；不以舊對話或本機HEAD冒充最新。
+2. 保留其他工程師未整合工作，確認檔案所有權與基底再修改；不要reset、覆蓋或重做已完成系統。
+3. 每個穩定階段：**功能 → 測試 → 修正 → 再測試 → commit → push → 下一功能**，同時更新交接。
+4. 推送前再次fetch；若main有新提交，整合並重測，不force push main。
+5. 額度／時間中斷後先讀最新repository及交接，從未完成處續作；未測、未push、未部署或未實機驗證各自分開回報。
