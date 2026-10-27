@@ -69,3 +69,10 @@
 - Discovery toast and Build descriptions; cooldowns, proc suppression and shared caps prevent recursive/unbounded projectiles or fields. Crit text/flash/audio/stop/shake differentiated; Boss heavy-hit posture break has a 3s recovery window; light attacks cannot accumulate posture.
 - Validation: 91 model tests; 14 targeted browser regressions + synergy UI test passed; production build and subpath/standalone smoke passed. Existing four-Build Boss guardrails unchanged. Mobile 4x CPU synthetic render median9.5/P9515.5ms (not physical-device FPS).
 - Next incomplete: events/pacing, paged temple, real fates, persistent summaries/history and final full acceptance/deployment.
+
+## v0.4 checkpoint C — events and run pacing
+- Normal adventures now have nine nodes: battle/reward-or-event/battle/elite/shop-or-relic/event/Build reinforcement/battle/Boss. Explicit legacy model runs keep their seven-node path.
+- Six real once-only events in src/events.js: Taoist HP trade, statue money blessing, three-way mist choice, stronger-enemy bargain, two-combat fortune, optional elite grave challenge.
+- Temporary combat penalties expire by battles (not service rooms), future enemy tempo/damage changes are capped, challenges return to event/relic reward before selecting the next route.
+- Validation: 98 model tests passed; updated full normal adventure and route/shop browser tests + all-six-event UI acceptance passed. Production build/subpath/standalone smoke passed.
+- Next incomplete: temple pages, rule fates, bounded discovery/history migration, full run summary, final regression/performance/deployment.
