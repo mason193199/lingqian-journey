@@ -1,3 +1,4 @@
+import {SYNERGIES} from './synergies.js';
 import {CHARACTERS} from './characters.js';
 import {WEAPONS} from './weapons.js';
 import {ELEMENTS,BAGUA,EVOLUTIONS} from './evolution.js';
@@ -16,7 +17,7 @@ export function setupInterface(g){
  case 'fight':return `<h3>${c?CHARACTERS[c.id].name:'見習旅人'}</h3><p>${c?CHARACTERS[c.id].passive:''}</p><p>天賦技能：${c?CHARACTERS[c.id].skill:'E 施放'}<br>冷卻 ${Math.ceil(c?.skillCd||0)} 秒</p><p>生命 ${Math.ceil(p.hp)} / ${p.maxHp} · 靈力 ${Math.ceil(p.energy||0)}</p>`;
  case 'relic':return `<h3>同行法器 · ${g.relics.length}</h3>${g.relics.map(r=>`<p><b>${RELICS[r.id].icon} ${r.name} · ${QUALITIES[r.quality]}</b><br>${RELICS[r.id].description}</p>`).join('')||'<p>選路尋找法器，改變本局打法。</p>'}`;
  case 'journey':return `<h3>靈霧竹林</h3><p>第 ${(g.run?.floor||0)+1} 間 · 靈錢 ${g.money||0}</p><p>淨化 ${g.kills} · ${Math.floor(g.elapsed||0)} 秒</p><p>${g.run?.path?.map(r=>typeof r==='string'?r:r.type).join(' → ')||'旅程剛開始'}</p>`;
- default:return `<h3>${WEAPONS[p.weapon]?.name||'桃木劍'}</h3><p>${ELEMENTS[b?.element]?.name||'五行未定'} × ${BAGUA[b?.bagua]?.name||'卦象未定'}</p><p>${Object.values(EVOLUTIONS).find(e=>e.id===b?.evolution)?.name||'尚未進化'}</p><p>協同：${g.synergyNames?.join('、')||'尚未發現'}</p>`;}}
+ default:return `<h3>${WEAPONS[p.weapon]?.name||'桃木劍'}</h3><p>${ELEMENTS[b?.element]?.name||'五行未定'} × ${BAGUA[b?.bagua]?.name||'卦象未定'}</p><p>${Object.values(EVOLUTIONS).find(e=>e.id===b?.evolution)?.name||'尚未進化'}</p><p>協同：${g.synergyNames?.join('、')||'尚未發現'}</p>${(g.synergies||[]).map(id=>`<p>${SYNERGIES[id].description}</p>`).join('')}`;}}
  function details(){return `<div class="info-detail">${tabs()}<div class="info-content">${content()}</div></div>`;}
  function reflow(){const next=document.body.dataset.touch!=='true'&&!document.fullscreenElement;if(next===desktop)return;desktop=next;document.body.dataset.desktop=String(next);if(next){left.append(nodes[0].node,nodes[1].node,nodes[2].node);top.append(nodes[3].node,nodes[4].node);}else for(const {node,marker}of nodes)marker.after(node);signature='';}
  window.addEventListener('gameviewportchange',reflow);document.addEventListener('fullscreenchange',reflow);

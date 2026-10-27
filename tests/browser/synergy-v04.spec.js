@@ -1,0 +1,2 @@
+import {test,expect} from '@playwright/test';
+test('real synergy discovery appears once and Build tab describes the mechanical effect',async({page})=>{await page.goto('/?test');await page.click('[data-command=start]');await page.evaluate(()=>{const g=window.__game;g.reset({build:true,element:'metal',bagua:'zhen',relics:['thunderOrder']});});await expect(page.locator('#synergy-toast')).toContainText('發現協同：九霄連雷');await expect(page.locator('.desktop-right')).toContainText('保證跳向最多兩名敵人');await page.screenshot({path:'test-results/v04-desktop-build.png'});});

@@ -169,7 +169,7 @@ export function render(output,g,time){
  }
 
  visualEffects(c,g,time);
- for(const e of (g.effects||[]).slice(mobileEffects?-10:-24)){if(e.x<cam-50||e.x>cam+1330)continue;c.globalAlpha=Math.min(1,(e.life||1)*2);text(c,e.text,e.x,e.y,20,e.color||P.gold);}c.globalAlpha=1;c.restore();
+ for(const e of (g.effects||[]).slice(mobileEffects?-10:-24)){if(e.x<cam-50||e.x>cam+1330)continue;c.globalAlpha=Math.min(1,(e.life||1)*2);text(c,e.text,e.x,e.y,e.critical?27:20,e.color||P.gold);}c.globalAlpha=1;c.restore();
  // Ambient spirit motes, capped and behind HUD.
  for(let i=0;i<20;i++){const x=(i*193+time*(5+i%3))%W,y=180+(i*91)%350+Math.sin(time+i)*10;c.globalAlpha=.35+Math.sin(time+i)*.15;star(c,x,y,i%3?P.light:P.gold,2);}c.globalAlpha=1;
  output.save();output.imageSmoothingEnabled=false;output.clearRect(0,0,W,H);const shake=!reducedMotion&&g.shake>0?2:0;const dx=shake?Math.round(Math.sin(time*83)*shake)*2:0,dy=shake?Math.round(Math.cos(time*71)*shake):0;output.fillStyle=P.dark;output.fillRect(0,0,W,H);output.drawImage(surface,dx,dy,W,H);output.restore();

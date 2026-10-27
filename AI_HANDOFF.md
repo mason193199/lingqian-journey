@@ -63,3 +63,9 @@
 - Desktop uses bounded 1280px canvas, external player/top panels and Fight/Build/Relic/Journey tabs; phone uses safe-area HUD and paused detail inspector. Existing viewport logic retained.
 - Validation: 83 model tests + existing 30 browser tests + 3 new interface tests passed; production build/path validation passed. No physical iPhone/Android available; browser emulation is not physical Safari proof.
 - Next: combat feedback/posture and 8–12 bounded mechanical synergies, then events/pacing, paged temple, persistent summaries/history. Do not call v0.4 complete at this checkpoint.
+
+## v0.4 checkpoint B — combat and synergies
+- Ten functional synergies in src/synergies.js: thunder fork, fire bloom, ice lances, wall armorbreak wave, pet volley, shield-loss wave, delayed extra starfall, status paper echo, poison spread, wall ice field.
+- Discovery toast and Build descriptions; cooldowns, proc suppression and shared caps prevent recursive/unbounded projectiles or fields. Crit text/flash/audio/stop/shake differentiated; Boss heavy-hit posture break has a 3s recovery window; light attacks cannot accumulate posture.
+- Validation: 91 model tests; 14 targeted browser regressions + synergy UI test passed; production build and subpath/standalone smoke passed. Existing four-Build Boss guardrails unchanged. Mobile 4x CPU synthetic render median9.5/P9515.5ms (not physical-device FPS).
+- Next incomplete: events/pacing, paged temple, real fates, persistent summaries/history and final full acceptance/deployment.
