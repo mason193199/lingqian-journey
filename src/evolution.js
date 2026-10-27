@@ -8,13 +8,13 @@ export const ELEMENTS={
  earth:{name:'土',icon:'土',color:'#e5cf91',description:'命中凝聚護盾，有觸發冷卻。'}
 };
 export const BAGUA={
- qian:{name:'乾卦',icon:'☰',description:'每四次攻擊射出一枚追蹤天氣彈。'},
- kun:{name:'坤卦',icon:'☷',description:'每三次攻擊凝聚短暫護盾。'},
+ qian:{name:'乾卦',icon:'☰',description:'每四次命中回復少量靈力。'},
+ kun:{name:'坤卦',icon:'☷',description:'每四次命中凝聚短暫護盾。'},
  zhen:{name:'震卦',icon:'☳',description:'每三次命中，雷光震及另一名敵人。'},
- xun:{name:'巽卦',icon:'☴',description:'每三次攻擊掀起推退近敵的風浪。'},
- kan:{name:'坎卦',icon:'☵',description:'每三次攻擊形成近身冰緩圈。'},
- li:{name:'離卦',icon:'☲',description:'燃燒目標被命中時向鄰近敵人濺出火星。'},
- gen:{name:'艮卦',icon:'☶',description:'每四次攻擊獲得短暫霸體，穩住陣腳。'},
+ xun:{name:'巽卦',icon:'☴',description:'命中附加中毒，最多三層。'},
+ kan:{name:'坎卦',icon:'☵',description:'命中附加冰緩。'},
+ li:{name:'離卦',icon:'☲',description:'命中附加燃燒，與火符的疊層爆裂協同。'},
+ gen:{name:'艮卦',icon:'☶',description:'每四次命中獲得短暫霸體，穩住陣腳。'},
  dui:{name:'兌卦',icon:'☱',description:'每三次命中回復少量靈力，不提供無限回血。'}
 };
 export const EVOLUTIONS={
@@ -37,7 +37,7 @@ function refresh(g,notice=true){const r=EVOLUTIONS[g.player.weapon],b=g.build;co
 export function attune(g,element,bagua){if(!g.build||!ELEMENTS[element]||!BAGUA[bagua])return false;g.build.element=element;g.build.bagua=bagua;refresh(g);return true;}
 export function onBlessingBuild(g,id){const map={thunder:['metal','zhen'],fire:['fire','li'],water:['water','kan'],wood:['wood','xun'],wind:['wood','dui']};return map[id]?attune(g,...map[id]):false;}
 export function blast(g,source,damage,radius,kind='rune',ignite=false){const q=center(source);for(const e of alive(g).filter(e=>e!==source&&near(center(e),q,radius)).slice(0,5)){g.damageEnemy(e,damage,{periodic:true,proc:true});if(ignite&&e.hp>0)applyStatus(e,'burn',2);}g.visual(kind,q.x,q.y,kind==='lightning'?'#e0c6ff':kind==='ice'?'#b3e9ef':'#ffbf8c',.45);}
-export function strikeLightning(g,e,damage){if(e.hp<=0)return;damage*=1+.08*(g.elementRanks?.metal||0);g.damageEnemy(e,damage,{periodic:true,proc:true});const q=center(e);g.build.beams.push({x:q.x,y:q.y-140,x2:q.x,y2:q.y,life:.22});g.build.beams=g.build.beams.slice(-8);g.visual('lightning',q.x,q.y,'#e0c6ff',.4);g.onLightning?.(e,damage);}
+export function strikeLightning(g,e,damage){damage*=1+.08*(g.elementRanks?.metal||0);g.damageEnemy(e,damage,{periodic:true,proc:true});const q=center(e);g.build.beams.push({x:q.x,y:q.y-140,x2:q.x,y2:q.y,life:.22});g.build.beams=g.build.beams.slice(-8);g.visual('lightning',q.x,q.y,'#e0c6ff',.4);g.onLightning?.(e,damage);}
 export function evolutionAttack(g){const b=g.build;if(!b)return;
  if(b.evolution===EVOLUTIONS.talisman.id){const native=[...g.projectiles].reverse().find(p=>p.hostile===false&&p.weapon==='talisman'&&!p.characterSource&&!p.evolutionSource);if(native){const a=Math.atan2(native.vy,native.vx),s=Math.hypot(native.vx,native.vy);for(const d of [-.20,.20])g.projectiles.push({...native,vx:Math.cos(a+d)*s,vy:Math.sin(a+d)*s,damage:native.damage*.48,evolutionSource:true});}}
  if(b.evolution===EVOLUTIONS.staff.id){const target=alive(g).filter(e=>(e.x-g.player.x)*g.player.facing>-10).sort((a,c)=>Math.abs(a.x-g.player.x)-Math.abs(c.x-g.player.x))[0];const x=target?center(target).x:g.player.x+g.player.facing*160;g.evolutionFields.push({x,y:565,radius:110,life:2.1,maxLife:2.1,tick:.4});g.evolutionFields=g.evolutionFields.slice(-3);}

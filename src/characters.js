@@ -14,7 +14,7 @@ export const TALENTS={
  qingyue:{a:{name:'飛劍流',description:'第五次近身命中射出追蹤劍氣；二階同時震傷附近敵人。'},b:{name:'踏罡流',description:'衝刺起步向前反擊；二階命中後獲得護盾。'}},
  hongling:{a:{name:'毒籙流',description:'符紙命中附加中毒；二階一次附加兩層。'},b:{name:'燎原流',description:'燃燒敵人死亡時符爆；二階將燃燒傳給附近敵人。'}},
  xinglian:{a:{name:'星河流',description:'三次星軌便召喚追蹤星辰；二階星辰附帶短暫冰凍。'},b:{name:'雙斗流',description:'墜星分為兩片星陣；二階第二陣延後落下形成兩段控場。'}},
- baili:{a:{name:'守靈流',description:'靈獸每四秒為旅人補充護盾；二階同時回復少量生命。'},b:{name:'獵靈流',description:'靈獸更頻繁攻擊；二階每三次命中額外發射靈彈。'}},
+ baili:{a:{name:'守靈流',description:'靈獸每四秒為旅人補充護盾；二階回復少量生命，本局被動治療上限20。'},b:{name:'獵靈流',description:'靈獸更頻繁攻擊；二階每三次命中額外發射靈彈。'}},
  xuanmo:{a:{name:'伏煞流',description:'受傷後下一次武器命中釋出反擊震波；二階震波冰緩敵人。'},b:{name:'鎮岳流',description:'護盾消散時產生守護震波；二階震波附加短暫冰凍。'}}
 };
 const talent=(g,id,branch,level=1)=>g.character?.id===id&&g.character.talentBranch===branch&&g.character.talentLevel>=level;
@@ -46,7 +46,7 @@ function changeChoices(g){
  g.blessingOptions=chosen;g.blessingRevision=(g.blessingRevision||0)+1;return true;
 }
 export function initCharacter(g,options={}){
- g.character=null;g.summons=[];g.skillZones=[];g.blessingOptions=null;g.blessingRevision=0;g.player.skillCount=0;g.player.knockbackResistance=1;g.player.luckBonus=0;
+ g.character=null;g.summons=[];g.skillZones=[];g.blessingOptions=null;g.blessingRevision=0;g.player.skillCount=0;g.passiveHealingBudget=20;g.player.knockbackResistance=1;g.player.luckBonus=0;
  if(!CHARACTERS[options.character])return;
  g.character={id:options.character,skillCd:0,combo:0,stars:0,rage:0,luckyTime:0,rerolls:2,extraChoice:options.character==='aqian'&&rng(g)<.3,summonPowerTime:0,summonSequence:0,killsSinceSummon:0,talentBranch:null,talentLevel:0,guardTimer:4,dashWasActive:false,counterReady:false,shieldPresent:false,luckyShieldPending:false};
  const branch=options.talent?.branch,level=options.talent?.level;if(['a','b'].includes(branch)&&Number.isInteger(level)&&level>=1){g.character.talentBranch=branch;g.character.talentLevel=Math.min(2,level);}
@@ -54,7 +54,7 @@ export function initCharacter(g,options={}){
  if(talent(g,'aqian','a')){g.character.extraChoice=true;g.character.rerolls=3;}
  g.character.shieldPresent=(g.player.statuses||[]).some(s=>s.id==='shield'&&s.remaining>0);
  if(options.character==='xuanmo')g.player.knockbackResistance=.45;
- g.player.skillCount=0;
+ g.player.skillCount=0;g.passiveHealingBudget=20;
  if(g.character.id==='aqian')changeChoices(g);
 }
 export function rerollBlessings(g){
@@ -118,7 +118,7 @@ export function tickCharacter(g,dt){
  const c=g.character;if(!c||g.state!=='playing')return;
  c.skillCd=Math.max(0,c.skillCd-dt);c.luckyTime=Math.max(0,c.luckyTime-dt);if(c.luckyShieldPending&&c.luckyTime===0){c.luckyShieldPending=false;applyStatus(g.player,'shield',4,{amount:15});}g.player.luckBonus=c.luckyTime>0?.2:0;c.summonPowerTime=Math.max(0,c.summonPowerTime-dt);
  if(talent(g,'qingyue','b')){const dashing=g.player.dashTime>0;if(dashing&&!c.dashWasActive){let hit=false;for(const e of alive(g))if((center(e).x-center(g.player).x)*g.player.facing>-20&&(center(e).x-center(g.player).x)*g.player.facing<180&&Math.abs(center(e).y-center(g.player).y)<100){hit=true;g.damageEnemy(e,20,{knockback:200,direction:g.player.facing,heavy:true});}if(hit&&talent(g,'qingyue','b',2))applyStatus(g.player,'shield',3,{amount:12});aura(g,'critical');}c.dashWasActive=dashing;}
- if(talent(g,'baili','a')&&g.summons.length){c.guardTimer-=dt;if(c.guardTimer<=0){c.guardTimer+=4;applyStatus(g.player,'shield',3,{amount:10});if(talent(g,'baili','a',2)&&!g.noHealing)g.player.hp=Math.min(g.player.maxHp,g.player.hp+2);aura(g,'purify');}}
+ if(talent(g,'baili','a')&&g.summons.length){c.guardTimer-=dt;if(c.guardTimer<=0){c.guardTimer+=4;applyStatus(g.player,'shield',3,{amount:10});if(talent(g,'baili','a',2)&&!g.noHealing&&g.passiveHealingBudget>0){const heal=Math.min(2,g.passiveHealingBudget,g.player.maxHp-g.player.hp);g.player.hp+=heal;g.passiveHealingBudget-=heal;}aura(g,'purify');}}
  const shieldNow=(g.player.statuses||[]).some(s=>s.id==='shield'&&s.remaining>0&&s.shield>0);if(talent(g,'xuanmo','b')&&c.shieldPresent&&!shieldNow){for(const e of alive(g))if(Math.hypot(center(e).x-center(g.player).x,center(e).y-center(g.player).y)<185){g.damageEnemy(e,18,{knockback:210,direction:center(e).x>=center(g.player).x?1:-1,heavy:true});if(talent(g,'xuanmo','b',2)&&e.hp>0)applyStatus(e,'freeze',.4);}aura(g,'slam');}c.shieldPresent=shieldNow;
  for(const z of g.skillZones){z.delay-=dt;z.life-=dt;if(z.delay<=0&&!z.resolved){z.resolved=true;for(const e of alive(g))if(Math.hypot(center(e).x-z.x,center(e).y-z.y)<z.radius){g.damageEnemy(e,z.damage,{knockback:160,direction:center(e).x>=z.x?1:-1,heavy:true});if(e.hp>0)applyStatus(e,'slow',2);}aura(g,'lightning',z.x,z.y,.7);}}
  g.skillZones=g.skillZones.filter(z=>!z.resolved);

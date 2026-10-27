@@ -31,3 +31,11 @@ Normal adventures now run seven finite rooms,with three unique consumed-once exi
 Kills award auto-collected pixel coin feedback once (normal8,elite12,Boss20); money resets with the Run and is independent from permanent jade. Merchant stock has three finite offers from relics,blessings,40HP heal and capped weapon training. Paid rerolls cost6/10/14 with maximum3. Affordability,full-health rejection,duplicate relic/blessing rejection,stale offer ids and one-purchase stock are guarded atomically. Initial merchant budgets cannot buy all stock; later savings are a deliberate choice.
 
 75 model tests,four affected browser scenarios and production checks pass. The compact phone HUD now shares an energy/money row instead of adding wide buttons. No negative balances or duplicated purchases were observed.
+
+## Stage6 — Build guardrails
+
+Four normal-ability builds finish finite adventures with legal choices/purchases:thunder sword,fire paper,ice staff and non-evolved wood/xun paper. Isolated live286HP Boss measurements under the same simple controller:3.52s/2.85s/4.38s/6.07s;all survive,max/min2.13. This is an initial automated guardrail,not a claim of final human-player balance. The short original Boss remains an important future playtest target.
+
+Fixed a real stall-healing loophole by capping Baili guardian-branch passive healing at20HP per Run. Element/bagua descriptions now match actual behavior;rare coins avoid already-capped elements. Third-hit lightning remains visible even on a lethal slash. Added visible short-room boundary posts for wall-burst readability. Boss freeze duty-cycle test stays below20%,and boss recoil is2% of requested force.
+
+80 model tests pass. Full27-browser regression passed before the final lethal-hit visual correction;the four affected route/shop/awakening/safe-viewport cases plus production checks passed after it. Next:performance budgets,offscreen reduction and final full regression.
