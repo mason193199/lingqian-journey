@@ -6,20 +6,20 @@
     <meta name="theme-color" content="#0e2826" />
     <meta name="description" content="《靈籤小旅》— 穿越靈霧竹林，借五行之力，改寫命籤。可使用鍵盤或手機橫向觸控遊玩的東方奇幻動作冒險。" />
     <title>靈籤小旅 · 靈霧竹林</title>
-    <script type="module" crossorigin src="./assets/index-CD2G4IPk.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-E1BhqI4Z.css">
+    <script type="module" crossorigin src="./assets/index-WKM-NB0e.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-BR6wu7cu.css">
   </head>
   <body>
     <main class="app">
       <header class="site-header">
         <a class="brand" href="./" aria-label="靈籤小旅首頁"><span class="brand-seal">籤</span><span>靈籤小旅<small>THE LITTLE ORACLE</small></span></a>
-        <div class="header-right"><span class="chapter-label">第一章 <i></i> 靈霧竹林</span><span class="edition">可玩原型 · 01</span></div>
+        <div class="header-right"><span class="chapter-label">第一章 <i></i> 靈霧竹林</span><span class="edition">像素靈境 · 壹</span></div>
       </header>
       <section class="game-shell" aria-label="靈籤小旅遊戲">
         <canvas id="game" width="1280" height="720" aria-label="遊戲畫面：使用 A D 移動、空白鍵跳躍、J 攻擊、K 衝刺" tabindex="0"></canvas>
         <div class="game-vignette" aria-hidden="true"></div>
         <div class="hud" id="hud">
-          <div class="player-status"><div class="avatar" aria-hidden="true">☯</div><div><div class="status-caption">小旅人 <span>五行護佑</span></div><div id="health" aria-label="生命值">♥ ♥ ♥ ♥ ♥</div></div></div>
+          <div class="player-status"><div class="avatar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" shape-rendering="crispEdges" aria-hidden="true"><path d="M10 1h12v3h6v6h3v12h-3v6h-6v3H10v-3H4v-6H1V10h3V4h6z" stroke="currentColor" stroke-width="2"/><path d="M12 7h8v3h4v12h-4v3h-8v-3H8V10h4z" fill="currentColor"/><path d="M16 7h4v3h4v12h-4v3h-4V16h-4v-6h4z" fill="#173d3b"/><path d="M17 10h3v3h-3z" fill="currentColor"/><path d="M12 19h3v3h-3z" fill="#173d3b"/></svg></div><div><div class="status-caption">小旅人 <span>五行護佑</span></div><div id="health" aria-label="生命值">♥ ♥ ♥ ♥ ♥</div></div></div>
           <div class="journey-status"><span class="hud-label">此行 · 靈霧竹林</span><strong id="stage">循著竹影，向前走</strong></div>
           <div class="hud-actions"><button type="button" id="sound" aria-label="開關音效" title="開關音效">♪</button><button type="button" data-action="pause" aria-label="暫停遊戲" title="暫停 Esc">Ⅱ</button></div>
         </div>
@@ -28,7 +28,7 @@
         <div id="overlay" class="overlay">
           <div class="title-screen">
             <div class="chapter-kicker"><span></span> 一籤一旅，一念一生 <span></span></div>
-            <div class="title-lockup"><span class="title-orbit" aria-hidden="true">☯</span><p class="vertical-note">東方奇幻冒險</p><h1>靈籤<span>小旅</span></h1><span class="title-seal">初<br>行</span></div>
+            <div class="title-lockup"><span class="title-orbit" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" shape-rendering="crispEdges" aria-hidden="true"><path d="M10 1h12v3h6v6h3v12h-3v6h-6v3H10v-3H4v-6H1V10h3V4h6z" stroke="currentColor" stroke-width="2"/><path d="M12 7h8v3h4v12h-4v3h-8v-3H8V10h4z" fill="currentColor"/><path d="M16 7h4v3h4v12h-4v3h-4V16h-4v-6h4z" fill="#173d3b"/><path d="M17 10h3v3h-3z" fill="currentColor"/><path d="M12 19h3v3h-3z" fill="#173d3b"/></svg></span><p class="vertical-note">東方像素奇幻</p><h1>靈籤<span>小旅</span></h1><span class="title-seal">初<br>行</span></div>
             <p class="title-subtitle">THE LITTLE ORACLE</p>
             <p class="title-copy">竹林起霧了。帶上一張靈符，<br>與小小的勇氣，踏進命運的下一頁。</p>
             <button type="button" class="primary start-button" data-command="start"><span>啟程入林</span><span aria-hidden="true">→</span></button>
