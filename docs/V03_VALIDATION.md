@@ -19,3 +19,9 @@ Evolution conditions pause the actual simulation in evolving state. The modal na
 Added conditional yin-yang output/shield,room-clear element ranks,wall seal burst,capped kill summons,compass room intel provider,freeze shards,charged-fire blast modifier and single-hop lightning. Three qualities improve bounded cooldown/area/chance/duration strength; duplicate same/lower-quality acquisition is rejected. First Build blessing leads to a real three-choice relic reward; pause shows held relic descriptions.
 
 69 model tests,two affected browser scenarios and production checks pass. Tests verify shield cooldown,one room award,quality caps,summon cap,freeze/wall trigger guards and nonrecursive lightning. Room intel will be connected to route menus in stage4; no room system is claimed completed at this checkpoint.
+
+## Stage4 — bounded three-way routes
+
+Normal adventures now run seven finite rooms,with three unique consumed-once exits per choice and three differently prepared final Boss gates. Combat,elite,relic,heal,merchant-stop and altar types are reachable; elite encounters add a different projectile pattern. Seeded route ordering is reproducible. Services pause combat,healing/attunement are one-use,and relic rewards resume the correct route. Compass reveals actual route type/enemy information,with more detail at higher quality. Legacy unconfigured chapter remains available to regression tests.
+
+71 model tests,three affected browser scenarios and production checks pass. Multiple complete route policies reach and defeat the Boss. Merchant navigation is present here; money and actual trade transactions are explicitly the next stage,not claimed complete yet.
