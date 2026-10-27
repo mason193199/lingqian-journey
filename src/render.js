@@ -155,10 +155,10 @@ export function render(output,g,time){
  time=g.state==='title'?time:(g.visualTime??g.elapsed??time);
  if(reducedMotion)time=Math.floor(time*4)/4;
  if(!surface){surface=document.createElement('canvas');surface.width=640;surface.height=360;view=surface.getContext('2d');}
- const c=view;c.setTransform(.5,0,0,.5,0,0);c.imageSmoothingEnabled=false;c.globalAlpha=1;scenery(c,g,time);const cam=snap(g.camera||0);c.save();c.translate(-cam,0);ground(c,cam,time);if(cam>1100)shrine(c,time);telegraphs(c,g,time);friendlySkillZones(c,g,time);for(const field of g.spellFields||[]){c.globalAlpha=.35+field.life/field.maxLife*.25;octagon(c,field.x,field.y,field.radius,'#c6b5f0');ring(c,field.x,field.y,field.radius*.65,'#a8e2df');star(c,field.x,field.y,P.white,4);c.globalAlpha=1;}
+ const c=view;c.setTransform(.5,0,0,.5,0,0);c.imageSmoothingEnabled=false;c.globalAlpha=1;scenery(c,g,time);const cam=snap(g.camera||0);c.save();c.translate(-cam,0);ground(c,cam,time);if(cam>1100)shrine(c,time);telegraphs(c,g,time);friendlySkillZones(c,g,time);for(const f of g.evolutionFields||[]){c.globalAlpha=.65;octagon(c,f.x,f.y,f.radius,'#b3e9ef');ring(c,f.x,f.y,f.radius*.7,'#e2f5ea');c.globalAlpha=1;}for(const ray of g.build?.beams||[]){for(let j=0;j<12;j++){const a=j/12;box(c,ray.x+(ray.x2-ray.x)*a+(j%2?4:-4),ray.y+(ray.y2-ray.y)*a,5,16,j%2?'#d9c5fa':P.white);}}for(const field of g.spellFields||[]){c.globalAlpha=.35+field.life/field.maxLife*.25;octagon(c,field.x,field.y,field.radius,'#c6b5f0');ring(c,field.x,field.y,field.radius*.65,'#a8e2df');star(c,field.x,field.y,P.white,4);c.globalAlpha=1;}
  for(const [i,s] of (g.summons||[]).slice(0,6).entries())friendlySpirit(c,s,time,i);
  for(const e of g.enemies||[])if(e.x>cam-150&&e.x<cam+1450)enemy(c,e,time);
- if(g.player)player(c,g.player,time,g.blessing,g.character?.id||'');
+ if(g.player){player(c,g.player,time,g.blessing,g.character?.id||'');if(g.build?.evolution){const color=g.build.element==='fire'?'#ffbf8c':g.build.element==='water'?'#b3e9ef':'#dfc7fa';star(c,g.player.x+19+g.player.facing*35,g.player.y+12,color,4);}}
  for(const p of g.projectiles||[]){
   const hostile=p.hostile!==false,col=hostile?'#e6a29c':p.weapon==='staff'?'#c9b7ed':'#f5d28c';
   for(let i=3;i>0;i--){c.globalAlpha=.9-i*.18;box(c,p.x-p.vx*.022*i,p.y-p.vy*.022*i,hostile?4:6,hostile?4:6,col);}c.globalAlpha=1;
