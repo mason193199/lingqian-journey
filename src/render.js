@@ -142,6 +142,9 @@ function visualEffects(c,g,time){for(const e of g.vfx||[]){const age=1-e.life/(e
   if(e.kind==='lightning'){for(let j=0;j<7;j++)box(c,e.x+(j%2?8:-6),e.y-90+j*14,6,18,'#ecd5ff');}
   if(e.kind==='rune'&&age<.65){octagon(c,e.x,e.y,12+age*45,'#f8d794');text(c,'敕',e.x,e.y+5,18,P.gold);}
   if(e.kind==='critical'&&age<.6){star(c,e.x,e.y,'#fff0bd',8);text(c,'暴擊',e.x,e.y-28-age*18,18,'#ffe09a');}
+  if(e.kind==='sword-hit'){for(let j=0;j<5;j++)box(c,e.x-16+j*8,e.y-20+j*8,6,10,P.white);}
+  if(e.kind==='paper-hit'){octagon(c,e.x,e.y,14+age*30,'#f3c896');text(c,'敕',e.x,e.y+5,18,'#ffce98');}
+  if(e.kind==='staff-hit'){ring(c,e.x,e.y,12+age*60,'#c6b5f0');diamond(c,e.x,e.y,8,P.white);}
   if(e.kind==='hit'&&age<.35){box(c,e.x-15,e.y-2,30,5,P.white);box(c,e.x-2,e.y-15,5,30,P.white);diamond(c,e.x,e.y,10-age*20,P.white);}
   for(let i=0;i<count;i++){const a=i*2.39996;const r=(10+age*radius)*(0.45+(i%5)*.13);const x=e.x+Math.cos(a)*r,y=e.y+Math.sin(a)*r+(boss?-age*65:age*age*30);box(c,x,y,i%3===0?5:3,i%3===0?5:3,i%3===0?P.white:i%2?color:P.light);if(i%7===0)star(c,x,y,color,2);}
   if(boss&&age<.8){for(let i=0;i<5;i++){const x=e.x-95+i*48;box(c,x,e.y-age*160+Math.sin(i)*18,8,15,P.gold);box(c,x+2,e.y-age*160+3+Math.sin(i)*18,3,8,'#bd8d86');}}
@@ -152,7 +155,7 @@ export function render(output,g,time){
  time=g.state==='title'?time:(g.visualTime??g.elapsed??time);
  if(reducedMotion)time=Math.floor(time*4)/4;
  if(!surface){surface=document.createElement('canvas');surface.width=640;surface.height=360;view=surface.getContext('2d');}
- const c=view;c.setTransform(.5,0,0,.5,0,0);c.imageSmoothingEnabled=false;c.globalAlpha=1;scenery(c,g,time);const cam=snap(g.camera||0);c.save();c.translate(-cam,0);ground(c,cam,time);if(cam>1100)shrine(c,time);telegraphs(c,g,time);friendlySkillZones(c,g,time);
+ const c=view;c.setTransform(.5,0,0,.5,0,0);c.imageSmoothingEnabled=false;c.globalAlpha=1;scenery(c,g,time);const cam=snap(g.camera||0);c.save();c.translate(-cam,0);ground(c,cam,time);if(cam>1100)shrine(c,time);telegraphs(c,g,time);friendlySkillZones(c,g,time);for(const field of g.spellFields||[]){c.globalAlpha=.35+field.life/field.maxLife*.25;octagon(c,field.x,field.y,field.radius,'#c6b5f0');ring(c,field.x,field.y,field.radius*.65,'#a8e2df');star(c,field.x,field.y,P.white,4);c.globalAlpha=1;}
  for(const [i,s] of (g.summons||[]).slice(0,6).entries())friendlySpirit(c,s,time,i);
  for(const e of g.enemies||[])if(e.x>cam-150&&e.x<cam+1450)enemy(c,e,time);
  if(g.player)player(c,g.player,time,g.blessing,g.character?.id||'');
