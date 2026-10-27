@@ -16,12 +16,12 @@ The release continues the stable v0.3 application (main cb9dd6e). Work was isola
 
 ## Automated acceptance
 
-- `npm test`: **107/107** model tests.
+- `npm test`: **108/108** model tests.
 - `PLAYWRIGHT_PORT=5191 npm run test:e2e`: **41/41** Chromium browser scenarios.
 - `npm run build`: Vite production build + independent offline HTML.
 - `npm run test:production`: production project-subpath desktop/phone input, title, blessing, asset requests, standalone smoke.
 - `git diff --check`: whitespace/error check.
-- Existing real keyboard chapter completion, six characters/eighteen loadouts, three evolution recipes, eight relics, status resistance, shop funds/repeated purchases, three-exit paths, QA crash/freeze/hit-stop regressions retained.
+- Existing real keyboard chapter completion, six characters/eighteen loadouts, three evolution recipes, eight relics, status resistance, shop funds/repeated purchases, three-exit paths, QA crash/freeze/hit-stop regressions retained. Final review also reproduced and fixed repeated weapon hits on a defeated target awarding extra critical/element charges and energy; lethal primary hits still trigger their intended third-hit lightning.
 - New tests cover all ten synergy mechanisms, all six real event screens, full nine-node normal adventure, temple region isolation, history after reload, rule effects, save migration/backup/untrusted IDs, rapid multi-pointer release and keyboard aliases, extreme compact safe-area view, 1080/1920/2560/3840/3440 desktop widths.
 
 ## Balance and performance evidence

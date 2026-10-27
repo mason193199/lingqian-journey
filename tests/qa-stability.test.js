@@ -13,3 +13,5 @@ test('all character skills respect freeze and become usable again after thawing'
   for(let i=0;i<25;i++)g.update(.01);assert.equal(g.useSkill(),true,character);
  }
 });
+
+test('overlapping area attacks cannot farm critical, elemental or character charges from defeated enemies',()=>{const g=new Game();g.reset({weapon:'staff',character:'qingyue',build:true,element:'earth',bagua:'qian'});const dead=g.enemies[0];g.weaponHit(dead,'staff',999);assert.ok(dead.hp<=0);g.player.energy=0;const before={hits:g.build.hits,crit:g.player.critMeter,combo:g.character.combo,kills:g.kills,energy:g.player.energy,vfx:g.vfx.length};for(let i=0;i<20;i++)g.weaponHit(dead,'staff',1);assert.deepEqual({hits:g.build.hits,crit:g.player.critMeter,combo:g.character.combo,kills:g.kills,energy:g.player.energy,vfx:g.vfx.length},before);});

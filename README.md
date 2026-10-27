@@ -49,7 +49,7 @@ npm run build
 npm run test:e2e
 ```
 
-107 項模型測試與 41 項 Playwright 瀏覽器情境（含真實鍵盤通關、三種祝福完整流程及手機多指觸控）。瀏覽器測試預設使用本環境 `/usr/bin/chromium`，其他環境可用 `CHROMIUM_PATH` 指定已安裝的 Chromium。不需要在一般遊玩時安裝測試瀏覽器。
+108 項模型測試與 41 項 Playwright 瀏覽器情境（含真實鍵盤通關、三種祝福完整流程及手機多指觸控）。瀏覽器測試預設使用本環境 `/usr/bin/chromium`，其他環境可用 `CHROMIUM_PATH` 指定已安裝的 Chromium。不需要在一般遊玩時安裝測試瀏覽器。
 
 完整流程的自動化測試使用正常能力和遊戲輸入模型加速執行；UI 狀態測試會使用測試介面直接設定戰鬥情境。只有網址帶 `?test` 才會公開 `window.__game` 診斷介面。
 
