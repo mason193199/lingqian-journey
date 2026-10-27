@@ -65,10 +65,10 @@ export class Game {
    else {this.state='won';this.finish();this.projectiles=[];this.zones=[];return;}
   }
   for(const b of this.projectiles){
-   if(b.hostile===false&&b.weapon==='staff'){const target=this.enemies.filter(e=>e.hp>0).sort((a,c)=>Math.hypot(a.x-b.x,a.y-b.y)-Math.hypot(c.x-b.x,c.y-b.y))[0];if(target){const a=Math.atan2(target.y+target.h/2-b.y,target.x+target.w/2-b.x);b.vx+=(Math.cos(a)*290-b.vx)*dt*3;b.vy+=(Math.sin(a)*290-b.vy)*dt*3;}}
+   if(b.hostile===false&&(b.weapon==='staff'||b.homing)){const target=this.enemies.filter(e=>e.hp>0).sort((a,c)=>Math.hypot(a.x-b.x,a.y-b.y)-Math.hypot(c.x-b.x,c.y-b.y))[0];if(target){const a=Math.atan2(target.y+target.h/2-b.y,target.x+target.w/2-b.x);b.vx+=(Math.cos(a)*290-b.vx)*dt*3;b.vy+=(Math.sin(a)*290-b.vy)*dt*3;}}
    b.x+=b.vx*dt;b.y+=b.vy*dt;b.life-=dt;if(b.life<=0)continue;
    if(b.hostile!==false){if(p.x<b.x+b.r&&p.x+p.w>b.x-b.r&&p.y<b.y+b.r&&p.y+p.h>b.y-b.r){if(this.hurt(9,b.x)&&b.status)applyStatus(p,b.status,1.5);b.life=0;}}
-   else {const target=this.enemies.find(e=>e.hp>0&&e.x<b.x+b.r&&e.x+e.w>b.x-b.r&&e.y<b.y+b.r&&e.y+e.h>b.y-b.r);if(target){b.life=0;this.visual(b.weapon==='staff'?'lightning':'rune',b.x,b.y,b.weapon==='staff'?'#ddc0ff':'#ffd192',.5);for(const e of this.enemies){if(e===target||(b.weapon==='staff'&&Math.hypot(e.x+e.w/2-b.x,e.y+e.h/2-b.y)<100))this.weaponHit(e,b.weapon,b.damage,{freeze:b.freeze,direction:Math.sign(b.vx)});}}}
+   else {const target=this.enemies.find(e=>e.hp>0&&e.x<b.x+b.r&&e.x+e.w>b.x-b.r&&e.y<b.y+b.r&&e.y+e.h>b.y-b.r);if(target){b.life=0;this.visual(b.weapon==='staff'?'lightning':'rune',b.x,b.y,b.weapon==='staff'?'#ddc0ff':'#ffd192',.5);for(const e of this.enemies){if(e===target||(b.weapon==='staff'&&Math.hypot(e.x+e.w/2-b.x,e.y+e.h/2-b.y)<100))this.weaponHit(e,b.weapon,b.damage,{freeze:b.freeze,direction:Math.sign(b.vx),proc:!!b.characterSource});}}}
   }
   this.projectiles=this.projectiles.filter(b=>b.life>0&&b.y<750&&b.x>-100&&b.x<3400);
   this.effects.forEach(e=>{e.life-=dt;e.y-=23*dt;});this.effects=this.effects.filter(e=>e.life>0);this.zones.forEach(z=>z.life-=dt);this.zones=this.zones.filter(z=>z.life>0);
