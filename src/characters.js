@@ -1,3 +1,4 @@
+import {trimFriendly} from './budgets.js';
 import {applyStatus,hasStatus} from './status.js';
 
 // Character hooks are opt-in. An unconfigured Game keeps the original chapter rules.
@@ -30,7 +31,7 @@ function fire(g,target,{damage=12,weapon='staff',speed=330,offset=0,freeze=false
  const angle=Math.atan2(point.y-origin.y,point.x-origin.x)+offset;
  g.projectiles.push({x:origin.x+p.facing*23,y:origin.y,vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed,r:weapon==='staff'?10:8,life:2.2,hostile:false,weapon,damage,freeze,homing,characterSource:g.character.id});
  // A skill must not leave a growing projectile list during long sessions.
- if(g.projectiles.length>48)g.projectiles.splice(0,g.projectiles.length-48);
+ trimFriendly(g);
 }
 function summon(g){
  if(g.summons.length>=3)return false;

@@ -39,3 +39,13 @@ Four normal-ability builds finish finite adventures with legal choices/purchases
 Fixed a real stall-healing loophole by capping Baili guardian-branch passive healing at20HP per Run. Element/bagua descriptions now match actual behavior;rare coins avoid already-capped elements. Third-hit lightning remains visible even on a lethal slash. Added visible short-room boundary posts for wall-burst readability. Boss freeze duty-cycle test stays below20%,and boss recoil is2% of requested force.
 
 80 model tests pass. Full27-browser regression passed before the final lethal-hit visual correction;the four affected route/shop/awakening/safe-viewport cases plus production checks passed after it. Next:performance budgets,offscreen reduction and final full regression.
+
+## Stage7 — mobile budgets and release acceptance
+
+Friendly projectiles32,hostile24,effects48,stored damage labels24,fields3 per system and summons3 are bounded. Friendly saturation preserves existing hostile attacks;new enemy shots are skipped only at their separate saturation limit. Mobile renders the latest24 effects/10 labels with smaller particle counts;offscreen particles/projectiles/labels are culled. Cached640×360 scenery is refreshed in modest camera/time steps while combat remains smooth. Room transitions discard stale visual transients. Four-option Aqian menus remain scrollable on640×320 phones.
+
+Final code passed83 model tests,30 full browser scenarios,production build and three production smoke targets. Extra performance test was extended to include actual simulation+rendering with projectiles,summons,ice fields,lightning/fire/ice events and labels;it passed after the full suite. Normal adventure UI test completes elite→shop→relic→altar→combat→Boss through legal combat inputs and real menus;legacy keyboard full clear remains covered separately.
+
+Synthetic Chromium phone/4×CPU measurements vary by host run:render-only median9.3–11.5ms,P9512.3–19.5ms after caching (earlier pre-cache18.5/23.3ms). Latest combined simulation+render median9.8ms,P9517.9ms. These are CPU workload samples,not actual physical-device FPS,compositor timings or guaranteed60FPS. Real iPhone/Android GPU,thermal throttling and low-end hardware remain unverified. The test's100ms ceiling detects severe regressions;it is not a60FPS criterion.
+
+Final integration review also made yin-yang apply once to all outgoing damage,including direct skills,and connected native thunder blessings/staff lightning to lightning-order relic procs. The corresponding two regression tests passed. No new characters,weapons,chapter2,NPC systems or full tribulation were added.
