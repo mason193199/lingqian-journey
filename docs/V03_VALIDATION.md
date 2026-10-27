@@ -13,3 +13,9 @@ Three matching recipes now change combat: third primary sword hit lightning + on
 Evolution conditions pause the actual simulation in evolving state. The modal names the evolution and explains mechanics; acknowledgement consumes the notice once and restores the previous flow. Weapon/effect colouring changes immediately. Compact HUD shows element,bagua,evolution and the primary relic placeholder. Reduced-motion respects accessibility settings.
 
 63 model tests,eight affected browser scenarios and production checks pass. Tests prove elapsed time/enemy simulation stop during the prompt and all three natural recipes resume on acknowledgement.
+
+## Stage3 — eight relics
+
+Added conditional yin-yang output/shield,room-clear element ranks,wall seal burst,capped kill summons,compass room intel provider,freeze shards,charged-fire blast modifier and single-hop lightning. Three qualities improve bounded cooldown/area/chance/duration strength; duplicate same/lower-quality acquisition is rejected. First Build blessing leads to a real three-choice relic reward; pause shows held relic descriptions.
+
+69 model tests,two affected browser scenarios and production checks pass. Tests verify shield cooldown,one room award,quality caps,summon cap,freeze/wall trigger guards and nonrecursive lightning. Room intel will be connected to route menus in stage4; no room system is claimed completed at this checkpoint.

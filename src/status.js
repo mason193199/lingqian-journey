@@ -8,7 +8,7 @@ export function applyStatus(entity,id,duration=3,options={}){
  if(id==='freeze'&&(hasStatus(entity,'unstoppable')||(entity.controlImmunity||0)>0))return false;
  duration=Math.min(duration,id==='freeze'?(boss?.22:.65):8);if(boss&&['slow','burn','poison','armorbreak','shock'].includes(id))duration*=.65;
  const old=entity.statuses.find(s=>s.id===id);if(old){if(id==='freeze')return false;old.remaining=Math.min(8,Math.max(old.remaining,duration));if(id==='poison')old.stacks=Math.min(3,old.stacks+1);if(id==='shield')old.shield=Math.min(40,(old.shield||0)+(options.amount||15));return true;}
- entity.statuses.push({id,remaining:duration,stacks:1,tick:0,...(id==='shield'?{shield:options.amount||15}:{})});return true;
+ entity.statuses.push({id,remaining:duration,stacks:1,tick:0,...(id==='shield'?{shield:options.amount||15}:{})});entity.onStatusAdded?.(id);return true;
 }
 export function damageAfterStatuses(entity,amount){
  if(hasStatus(entity,'armorbreak'))amount*=1.18;

@@ -1,3 +1,4 @@
+import {RELICS,QUALITIES} from './relics.js';
 import {ELEMENTS,BAGUA,EVOLUTIONS} from './evolution.js';
 import {Game,BLESSINGS} from './game.js';
 import {MetaStore,UPGRADE_INFO} from './meta.js';
@@ -28,6 +29,7 @@ document.addEventListener('pointerup',release);document.addEventListener('pointe
 document.addEventListener('click',e=>{
  const command=e.target.closest('[data-command]')?.dataset.command;
  if(command==='start'){if(diagnostics)startRun(true);else prepare();}
+ const relicChoice=e.target.closest('[data-relic-choice]')?.dataset.relicChoice;if(relicChoice&&game.chooseRelic(relicChoice)){clearInput();playTone(680,.16);}
  if(command==='evolution-continue'){game.acknowledgeEvolution();clearInput();}
  if(command==='prepare')prepare();
  if(command==='start-run'||command==='restart')startRun();
@@ -49,9 +51,11 @@ function screen(){
  if(game.state==='won'&&game.vfx.some(v=>v.kind==='boss-defeat'&&v.life>v.maxLife-.85)){overlay.hidden=true;return;}
  if(game.state===previous&&game.blessingRevision===screen.revision)return;screen.revision=game.blessingRevision;previous=game.state;overlay.hidden=game.state==='playing';
  if(game.state==='title'||game.state==='preparing')return;
+ if(game.state==='relic-choice')overlay.innerHTML=`<div class="panel relic-panel"><span class="eyebrow">靈器相逢 · 本局持續生效</span><h1>選一件同行的法器</h1><div class="route-grid">${game.relicChoices.map(r=>`<button data-relic-choice="${r.id}"><span class="relic-icon">${RELICS[r.id].icon}</span><b>${RELICS[r.id].name}</b><small>${QUALITIES[r.quality]}</small><p>${RELICS[r.id].description}</p></button>`).join('')}</div></div>`;
  if(game.state==='evolving'){const r=game.buildNotices[0];overlay.innerHTML=`<div class="panel evolution-panel"><span class="eyebrow">BUILD AWAKENED · 命格共鳴</span><div class="evolution-seal">${r.weapon==='sword'?'雷':r.weapon==='talisman'?'焰':'冰'}</div><h1>${r.name}</h1><p>${r.description}</p><p>${ELEMENTS[r.element].name} × ${BAGUA[r.bagua].name} · 攻擊方式已進化</p><button class="primary" data-command="evolution-continue">帶著新力量繼續 →</button><small>戰鬥暫停中 · 確認後繼續</small></div>`;}
  if(game.state==='blessing')overlay.innerHTML=`<div class="panel blessing-panel"><span class="eyebrow">THE ORACLE · 命運的岔路</span><h1>一籤，一段新旅</h1><p>霧中星燈為你引路。選擇一份祝福，本次旅程持續生效。</p><div class="blessing-grid">${(game.blessingOptions||['fire','wood','wind']).map((id,i)=>{const b=BLESSINGS[id];return [id,b];}).map(([id,b],i)=>`<button class="blessing-card ${id}" data-blessing="${id}"><span class="card-number">0${i+1} · ${id==='fire'?'離卦':id==='water'?'坎卦':id==='thunder'?'震卦':'巽卦'}</span><span class="element">${b.icon}</span><h2>${b.name}</h2><p>${b.description}</p><span class="pick">選擇此籤 ↗</span></button>`).join('')}</div>${game.character?.id==='aqian'?`<button data-command="reroll" ${game.character.rerolls<=0?'disabled':''}>免費重抽（${game.character.rerolls}）</button><button data-command="character-skill" ${game.character.skillCd>0?'disabled':''}>改命技能</button>`:''}<small>已回復 25 點生命 · 選擇期間戰鬥暫停</small></div>`;
  if(game.state==='paused')overlay.innerHTML='<div class="panel compact"><span class="eyebrow">TAKE A BREATH</span><h1>歇一歇，再出發</h1><p>竹風仍在，旅途等你。</p><button class="primary" data-command="resume">繼續旅程 →</button><button class="secondary" data-command="restart">重新開始</button></div>';
+ if(game.state==='paused')overlay.querySelector('.panel').insertAdjacentHTML('beforeend',`<details class="relic-inventory"><summary>本局法器（${game.relics.length}）</summary>${game.relics.map(r=>`<p>${RELICS[r.id].icon} ${r.name} · ${QUALITIES[r.quality]}：${RELICS[r.id].description}</p>`).join('')}</details>`);
  if(game.state==='dead'||game.state==='won'){
   const won=game.state==='won';overlay.innerHTML=`<div class="panel compact"><span class="eyebrow">${won?'CHAPTER COMPLETE · 第一章通關':'THE JOURNEY CONTINUES'}</span><div class="end-symbol">${won?'☯':'☾'}</div><h1>${won?'霧散，星燈重明':'此籤未盡，且再啟程'}</h1><p>${won?'竹魄守卸下霧咒，向你輕輕頷首。<br>一縷星光落入羅盤，下一段旅程正在遠方。':'小旅人暫時迷失在靈霧中。<br>觀察紅色預兆，用跳躍和衝刺避開攻擊。'}</p><div class="run-stats">淨化 ${game.kills} 隻妖靈 · ${Math.floor(game.elapsed/60)}分${Math.floor(game.elapsed%60)}秒 · ${BLESSINGS[game.blessing]?.name||'尚未得籤'}</div><p class="resource-line">本局獲得 ${runReward} 靈玉 · 持有 ${store.data.jade} 靈玉</p><button class="secondary" data-command="prepare">行前準備／修行</button><button class="primary" data-command="restart">${won?'再求一籤，再走一旅':'重新出發'} →</button></div>`;
  }
@@ -68,7 +72,7 @@ const statuses=(p.statuses||[]).map(v=>`${STATUS_DEFS[v.id]?.icon||'✦'}${STATU
 const boss=game.enemies.find(e=>e.type==='boss');writeHUD('boss',!!boss&&game.state!=='title',v=>document.querySelector('#bossbar').hidden=!v);
 writeHUD('bossHp',boss?boss.hp/boss.maxHp:0,v=>document.querySelector('#bosshealth').style.width=`${v*100}%`);
 writeHUD('dash',p.dashCd>0,v=>document.querySelector('[data-action="dash"]')?.classList.toggle('cooldown',v));
-const build=game.build;writeHUD('build',build?`${build.element}/${build.bagua}/${build.evolution}/${(game.relics||[]).map(r=>r.id).join(',')}`:'',()=>{let el=document.querySelector('#buildhud');if(!el){el=document.createElement('div');el.id='buildhud';document.querySelector('.combat-readout').append(el);}const recipe=build?.evolution?Object.values(EVOLUTIONS).find(e=>e.id===build.evolution):null;el.textContent=build?`${ELEMENTS[build.element]?.name||'五行未定'} × ${BAGUA[build.bagua]?.name||'卦象未定'} · ${recipe?.name||'未進化'} · 法器 ${(game.relics||[]).length?game.relics[0].name:'無'}`:'';});
+const build=game.build;writeHUD('build',build?`${build.element}/${build.bagua}/${build.evolution}/${(game.relics||[]).map(r=>r.id+r.quality).join(',')}`:'',()=>{let el=document.querySelector('#buildhud');if(!el){el=document.createElement('div');el.id='buildhud';document.querySelector('.combat-readout').append(el);}const recipe=build?.evolution?Object.values(EVOLUTIONS).find(e=>e.id===build.evolution):null;el.textContent=build?`${ELEMENTS[build.element]?.name||'五行未定'} × ${BAGUA[build.bagua]?.name||'卦象未定'} · ${recipe?.name||'未進化'} · 法器 ${(game.relics||[]).length?game.relics[0].name:'無'}`:'';});
 const character=game.character;writeHUD('skill',character?`${character.id}/${Math.ceil(character.skillCd)}`:'',()=>{const el=document.querySelector('[data-action=skill]');if(el){el.textContent=character?`${CHARACTERS[character.id].skill.split('：')[0]} ${character.skillCd>0?Math.ceil(character.skillCd)+'s':'E'}`:'天賦 E';el.classList.toggle('cooldown',character?.skillCd>0);}});
 writeHUD('wave',game.wave,v=>document.querySelector('#hud').dataset.wave=String(v));
 }

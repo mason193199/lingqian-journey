@@ -15,7 +15,7 @@ export const BAGUA={
  kan:{name:'坎卦',icon:'☵',description:'每三次攻擊形成近身冰緩圈。'},
  li:{name:'離卦',icon:'☲',description:'燃燒目標被命中時向鄰近敵人濺出火星。'},
  gen:{name:'艮卦',icon:'☶',description:'每四次攻擊獲得短暫霸體，穩住陣腳。'},
- dui:{name:'兌卦',icon:'☱',description:'每三次命中回復少量生命，受禁療規則約束。'}
+ dui:{name:'兌卦',icon:'☱',description:'每三次命中回復少量靈力，不提供無限回血。'}
 };
 export const EVOLUTIONS={
  sword:{id:'thunder-sword',name:'九霄雷罡劍',weapon:'sword',element:'metal',bagua:'zhen',description:'近戰第三次命中召喚落雷，擊退撞牆引發雷爆。'},
@@ -37,14 +37,14 @@ function refresh(g,notice=true){const r=EVOLUTIONS[g.player.weapon],b=g.build;co
 export function attune(g,element,bagua){if(!g.build||!ELEMENTS[element]||!BAGUA[bagua])return false;g.build.element=element;g.build.bagua=bagua;refresh(g);return true;}
 export function onBlessingBuild(g,id){const map={thunder:['metal','zhen'],fire:['fire','li'],water:['water','kan'],wood:['wood','xun'],wind:['wood','dui']};return map[id]?attune(g,...map[id]):false;}
 export function blast(g,source,damage,radius,kind='rune',ignite=false){const q=center(source);for(const e of alive(g).filter(e=>e!==source&&near(center(e),q,radius)).slice(0,5)){g.damageEnemy(e,damage,{periodic:true,proc:true});if(ignite&&e.hp>0)applyStatus(e,'burn',2);}g.visual(kind,q.x,q.y,kind==='lightning'?'#e0c6ff':kind==='ice'?'#b3e9ef':'#ffbf8c',.45);}
-export function strikeLightning(g,e,damage){if(e.hp<=0)return;g.damageEnemy(e,damage,{periodic:true,proc:true});const q=center(e);g.build.beams.push({x:q.x,y:q.y-140,x2:q.x,y2:q.y,life:.22});g.build.beams=g.build.beams.slice(-8);g.visual('lightning',q.x,q.y,'#e0c6ff',.4);g.onLightning?.(e,damage);}
+export function strikeLightning(g,e,damage){if(e.hp<=0)return;damage*=1+.08*(g.elementRanks?.metal||0);g.damageEnemy(e,damage,{periodic:true,proc:true});const q=center(e);g.build.beams.push({x:q.x,y:q.y-140,x2:q.x,y2:q.y,life:.22});g.build.beams=g.build.beams.slice(-8);g.visual('lightning',q.x,q.y,'#e0c6ff',.4);g.onLightning?.(e,damage);}
 export function evolutionAttack(g){const b=g.build;if(!b)return;
  if(b.evolution===EVOLUTIONS.talisman.id){const native=[...g.projectiles].reverse().find(p=>p.hostile===false&&p.weapon==='talisman'&&!p.characterSource&&!p.evolutionSource);if(native){const a=Math.atan2(native.vy,native.vx),s=Math.hypot(native.vx,native.vy);for(const d of [-.20,.20])g.projectiles.push({...native,vx:Math.cos(a+d)*s,vy:Math.sin(a+d)*s,damage:native.damage*.48,evolutionSource:true});}}
  if(b.evolution===EVOLUTIONS.staff.id){const target=alive(g).filter(e=>(e.x-g.player.x)*g.player.facing>-10).sort((a,c)=>Math.abs(a.x-g.player.x)-Math.abs(c.x-g.player.x))[0];const x=target?center(target).x:g.player.x+g.player.facing*160;g.evolutionFields.push({x,y:565,radius:110,life:2.1,maxLife:2.1,tick:.4});g.evolutionFields=g.evolutionFields.slice(-3);}
 }
 export function evolutionHit(g,e,weapon,extra={}){const b=g.build;if(!b||extra.proc)return;
  const secondary=extra.evolutionProc;
- if(!secondary){b.hits++;if(b.element==='wood')applyStatus(e,'poison',3);if(b.element==='fire')applyStatus(e,'burn',3);if(b.element==='water')applyStatus(e,'slow',1.5);if(b.element==='metal')applyStatus(e,'shock',3);if(b.element==='earth'&&b.earthCd<=0){applyStatus(g.player,'shield',3,{amount:5});b.earthCd=1;}
+ if(!secondary){b.hits++;if(b.element==='wood')applyStatus(e,'poison',3);if(b.element==='wood'&&(g.elementRanks?.wood||0)>0)applyStatus(e,'poison',3);if(b.element==='fire')applyStatus(e,'burn',3);if(b.element==='water')applyStatus(e,'slow',1.5);if(b.element==='metal')applyStatus(e,'shock',3);if(b.element==='earth'&&b.earthCd<=0){applyStatus(g.player,'shield',3,{amount:5+2*(g.elementRanks?.earth||0)});b.earthCd=1;}
  if(b.bagua==='qian'&&b.hits%4===0)g.player.energy=Math.min(g.player.maxEnergy,g.player.energy+5);
  if(b.bagua==='kun'&&b.hits%4===0)applyStatus(g.player,'shield',2,{amount:6});
  if(b.bagua==='xun')applyStatus(e,'poison',2);if(b.bagua==='kan')applyStatus(e,'slow',1.4);if(b.bagua==='li')applyStatus(e,'burn',2);
@@ -52,12 +52,12 @@ export function evolutionHit(g,e,weapon,extra={}){const b=g.build;if(!b||extra.p
  if(b.bagua==='dui'&&b.hits%3===0)g.player.energy=Math.min(g.player.maxEnergy,g.player.energy+4);
  if(b.bagua==='zhen'&&b.evolution!==EVOLUTIONS.sword.id&&b.hits%3===0){const other=alive(g).find(v=>v!==e&&near(center(v),center(e),150));if(other)strikeLightning(g,other,5);}}
  if(b.evolution===EVOLUTIONS.sword.id&&weapon==='sword'&&!secondary&&b.hits%3===0)strikeLightning(g,e,Math.min(14,g.player.damage*.55));
- if(b.evolution===EVOLUTIONS.talisman.id&&weapon==='talisman'&&e.hp>0){applyStatus(e,'burn',3);e.fireStacks=Math.min(3,(e.fireStacks||0)+1);e.fireStackTime=3;if(e.fireStacks>=3&&(e.fireExplosionCd||0)<=0){e.fireStacks=0;e.fireExplosionCd=.6;const power=g.fireBlastMultiplier||1;g.damageEnemy(e,10*power,{periodic:true,proc:true});blast(g,e,8*power,115,'rune',true);}}
+ if(b.evolution===EVOLUTIONS.talisman.id&&weapon==='talisman'&&e.hp>0){applyStatus(e,'burn',3);e.fireStacks=Math.min(3,(e.fireStacks||0)+1);e.fireStackTime=3;if(e.fireStacks>=3&&(e.fireExplosionCd||0)<=0){e.fireStacks=0;e.fireExplosionCd=.6;const power=g.fireBlastMultiplier||1;g.damageEnemy(e,10*power,{periodic:true,proc:true});blast(g,e,8*power,115+(g.fireRadiusBonus||0)+8*(g.elementRanks?.fire||0),'rune',true);}}
 }
 export function evolutionWall(g,e){if(g.build?.evolution===EVOLUTIONS.sword.id){g.damageEnemy(e,10,{periodic:true,proc:true});blast(g,e,8,110,'lightning');}}
 export function evolutionKill(g,e){if(g.build?.evolution===EVOLUTIONS.staff.id&&hasStatus(e,'freeze'))blast(g,e,9,115,'ice');}
 export function tickBuild(g,dt){if(!g.build||g.state!=='playing')return;g.build.earthCd=Math.max(0,g.build.earthCd-dt);for(const ray of g.build.beams)ray.life-=dt;g.build.beams=g.build.beams.filter(v=>v.life>0);
  for(const e of g.enemies){e.fireExplosionCd=Math.max(0,(e.fireExplosionCd||0)-dt);e.fireStackTime=Math.max(0,(e.fireStackTime||0)-dt);if(!e.fireStackTime)e.fireStacks=0;}
- for(const f of g.evolutionFields){f.life-=dt;f.tick-=dt;if(f.life<=0||f.tick>0)continue;f.tick+=.4;for(const e of alive(g)){if(Math.abs(center(e).x-f.x)>f.radius||e.y+e.h<485)continue;g.damageEnemy(e,2,{periodic:true,proc:true});if(e.hp<=0)continue;applyStatus(e,'slow',1);e.iceExposure=Math.min(3,(e.iceExposure||0)+1);if(e.iceExposure>=3){if(applyStatus(e,'freeze',.5))g.visual('ice',e.x,e.y,'#b3e9ef');e.iceExposure=0;}}}
+ for(const f of g.evolutionFields){f.life-=dt;f.tick-=dt;if(f.life<=0||f.tick>0)continue;f.tick+=.4;for(const e of alive(g)){if(Math.abs(center(e).x-f.x)>f.radius||e.y+e.h<485)continue;g.damageEnemy(e,2,{periodic:true,proc:true});if(e.hp<=0)continue;applyStatus(e,'slow',1);e.iceExposure=Math.min(3,(e.iceExposure||0)+1+((g.elementRanks?.water||0)>=2?1:0));if(e.iceExposure>=3){if(applyStatus(e,'freeze',.5))g.visual('ice',e.x,e.y,'#b3e9ef');e.iceExposure=0;}}}
  g.evolutionFields=g.evolutionFields.filter(f=>f.life>0);
 }
