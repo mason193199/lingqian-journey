@@ -25,3 +25,9 @@ Added conditional yin-yang output/shield,room-clear element ranks,wall seal burs
 Normal adventures now run seven finite rooms,with three unique consumed-once exits per choice and three differently prepared final Boss gates. Combat,elite,relic,heal,merchant-stop and altar types are reachable; elite encounters add a different projectile pattern. Seeded route ordering is reproducible. Services pause combat,healing/attunement are one-use,and relic rewards resume the correct route. Compass reveals actual route type/enemy information,with more detail at higher quality. Legacy unconfigured chapter remains available to regression tests.
 
 71 model tests,three affected browser scenarios and production checks pass. Multiple complete route policies reach and defeat the Boss. Merchant navigation is present here; money and actual trade transactions are explicitly the next stage,not claimed complete yet.
+
+## Stage5 — run money and merchant
+
+Kills award auto-collected pixel coin feedback once (normal8,elite12,Boss20); money resets with the Run and is independent from permanent jade. Merchant stock has three finite offers from relics,blessings,40HP heal and capped weapon training. Paid rerolls cost6/10/14 with maximum3. Affordability,full-health rejection,duplicate relic/blessing rejection,stale offer ids and one-purchase stock are guarded atomically. Initial merchant budgets cannot buy all stock; later savings are a deliberate choice.
+
+75 model tests,four affected browser scenarios and production checks pass. The compact phone HUD now shares an energy/money row instead of adding wide buttons. No negative balances or duplicated purchases were observed.

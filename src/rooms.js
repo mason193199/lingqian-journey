@@ -1,3 +1,4 @@
+import{openShop}from'./shop.js';
 import{applyStatus}from'./status.js';import{offerRelics,clearRelics,roomIntel,relicOf}from'./relics.js';import{ELEMENTS,BAGUA}from'./evolution.js';
 export const ROOM_TYPES={combat:{name:'普通戰鬥',icon:'⚔',description:'面對妖靈，獲得穩定報酬。'},elite:{name:'精英試煉',icon:'煞',description:'強化妖靈與分散彈幕，高風險回報。'},relic:{name:'法器祠',icon:'器',description:'三選一法器；可能遇到更高品質。'},heal:{name:'靈泉',icon:'泉',description:'一次有限生命回復。'},shop:{name:'靈商',icon:'商',description:'保留靈錢，交換所需機緣。'},altar:{name:'卦象祭壇',icon:'☯',description:'選擇五行與卦象，形成或改變進化。'},boss:{name:'竹魄守',icon:'魄',description:'穿越最後霧門，面對竹林守衛。'}};
 export function seeded(seed){let a=seed>>>0;return()=>{a+=0x6D2B79F5;let t=Math.imul(a^a>>>15,1|a);t^=t+Math.imul(t^t>>>7,61|t);return((t^t>>>14)>>>0)/4294967296;};}
@@ -8,7 +9,7 @@ export function clearRoom(g){const r=g.run;if(!r||r.cleared.includes(r.roomId))r
 export function enterRoom(g,id){const r=g.run;if(!r||g.state!=='route')return false;const choice=r.choices.find(c=>c.id===id);if(!choice)return false;r.choices=[];r.floor++;r.type=choice.type;r.roomId=`${r.seed}/${r.floor}/${choice.type}`;r.path.push(choice.type);r.used=false;r.revision++;g.enemies=[];g.projectiles=[];g.spellFields=[];g.evolutionFields=[];g.skillZones=[];g.attackIds=new Set();const p=g.player;p.x=100;p.y=527;p.vy=0;p.stun=0;p.knockbackTimer=0;p.invuln=.4;g.camera=0;g.wave=0;g.enemyWall=1100;g.notice=`第${r.floor+1}間 · ${ROOM_TYPES[r.type].name}`;
  if(r.type==='combat'||r.type==='elite'){g.spawn('slime',540);g.spawn('spirit',860);if(r.type==='elite'){g.spawn('slime',1020);for(const e of g.enemies){e.elite=true;e.hp=e.maxHp=Math.round(e.maxHp*1.6);}}g.state='playing';}
  else if(r.type==='boss'){g.wave=2;g.enemyWall=3200;p.x=2500;g.camera=2020;g.spawn('boss',2870);if(choice.variant===0)p.hp=Math.min(p.maxHp,p.hp+12);if(choice.variant===1)p.energy=p.maxEnergy;if(choice.variant===2)applyStatus(p,'shield',5,{amount:15});g.state='playing';}
- else{g.state='room';if(r.type==='relic'){const quality=g.random()<.2?2:1;offerRelics(g,quality,'room');}}
+ else{g.state='room';if(r.type==='shop')openShop(g);if(r.type==='relic'){const quality=g.random()<.2?2:1;offerRelics(g,quality,'room');}}
  return true;
 }
 export function roomAction(g,action,data={}){const r=g.run;if(!r||g.state!=='room')return false;
