@@ -84,3 +84,11 @@
 - Local schema upgraded to v3 while retaining the existing v2 storage key and backup; v1/v2 saves migrate and preserve all prior progression/settings. Untrusted discovery/history IDs are bounded and validated before rendering. Settlement deduplication retained.
 - Validation: 105 model tests + 35 browser regression tests + 3 new temple/history browser tests passed. Production build/subpath/standalone smoke passed.
 - Next: full combined synergy stress, final 38+ browser regression, visual inspection, release version/docs, safe integration into current main, push and Pages deployment. Physical mobile Safari/Android remains unavailable in this environment.
+
+## v0.4 checkpoint E — final acceptance and release preparation
+- Version0.4.0. Added all-relic evolved/mixed Boss and repeated synergy stress; capped recycling confirmed. Extreme320x240 landscape safe-area and native keyboard pause tests added; temple header condensed for short phones. Existing six characters and three weapons preserved.
+- Final validation: 107/107 model tests, 41/41 Chromium browser scenarios, production build, desktop+phone project-subpath smoke and standalone HTML passed. `git diff --check` passed. See docs/V04_VALIDATION.md for detailed scope and limits.
+- Final all-relic Boss guardrails: thunder sword3.17s, fire paper1.98s, ice staff4.03s, mixed5.00s. All won; human difficulty balance remains a playtest task.
+- Final4x CPU/12-enemy/all-relic synergy stress update+render median/P95: sword6.2/12.0ms; paper8.1/12.8ms; staff7.8/12.7ms. Earlier mixed stress12.0/21.6ms. Not physical iPhone FPS or a universal60FPS claim.
+- Pending release step: verify origin/main has no concurrent changes, push this stable application to main without force, record its exact commit below, deploy clean production dist to existing gh-pages root, verify version.json+artifact hashes. Public CDN requests may remain blocked by the environment proxy.
+- v0.5 recommendation: physical Safari/Android input+toolbar acceptance, human pacing/Boss telegraph and encounter-length review, then richer event consequences/codex guidance and balance from run-history evidence. No second chapter or large new system is needed yet.

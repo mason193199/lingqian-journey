@@ -78,6 +78,7 @@ function updateHUD(){const p=game.player;
 writeHUD('hp',`${p.hp}/${p.maxHp}`,()=>document.querySelector('#health').innerHTML=`<span style="width:${p.hp/p.maxHp*100}%"></span><b>${Math.ceil(p.hp)} / ${p.maxHp}</b>`);
 writeHUD('stage',game.notice,v=>document.querySelector('#stage').textContent=v);
 writeHUD('blessing',game.blessing,v=>document.querySelector('#blessings').textContent=v?`✦ ${BLESSINGS[v].name}`:'✧ 尚未得籤');
+writeHUD('traveller',game.character?.id||'',id=>document.querySelector('#traveller-name').textContent=CHARACTERS[id]?.name||'小旅人');
 const weapon=game.player.weapon||'sword';writeHUD('weapon',weapon+(game.character?.id||''),v=>{const el=document.querySelector('#weaponhud');if(el)el.textContent=(game.character?CHARACTERS[game.character.id].name+' · ':'')+({sword:'⚔ 桃木劍',talisman:'符 靈符',staff:'✧ 靈杖'})[weapon];});
 writeHUD('money',game.money,v=>{let el=document.querySelector('#moneyhud');if(!el){el=document.createElement('div');el.id='moneyhud';document.querySelector('.combat-readout').append(el);}el.textContent=`靈錢 ${v}`;});
 writeHUD('energy',Math.ceil(p.energy??100)+'/'+(p.maxEnergy??100),v=>{const el=document.querySelector('#energy');if(el)el.textContent='靈力 '+v;});
