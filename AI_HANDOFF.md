@@ -118,3 +118,10 @@
 - 已讀README/code/tests/history及遠端heads；qa分支已合併，v04與main同點。GitHub PR GraphQL被拒，不能宣稱已審查PR討論；Git未廣告PR head refs。
 - 新建GAME_ROADMAP、GAME_DESIGN、BALANCE_NOTES，分清已完工／品質不足／未完成／失效項目。v0.5先品質操作，v0.6與v0.7仍未開始。
 - QA已重現Boss離屏追加敵人、減少動態未套用及角色種子初始化順序問題。下一步先修，再設定／HUD／美術／引導；每階段獨立測試推送。
+
+## v0.5 品質階段完成驗收（2026-10-28，尚待此checkpoint推送／發布）
+- 126/126模型、48/48瀏覽器、production build／子路徑／獨立HTML及diff check通過。版本0.5.0，正式新冒險combatV3=true；?test直接開始保留歷史節奏，正常準備→開始仍是新節奏。
+- 實際生效的設定／安全觸控尺寸／完整狀態與HUD快捷鍵、原創UI／像素場景細化、真實可略過重播引導、短蓄力／取消／落地、可選原創合成旋律已接入並驗收。
+- 修Boss離屏事件敵人、種子初始化、reducedMotion未接線；獨立QA再重現modal穿透／空中教學／跨房幽靈蓄力，均加測修正並複查。手機菜單只保留齒輪，不讓戰鬥血條遮基地。
+- 具體來源／品質限制／測量見GAME_ROADMAP、GAME_DESIGN、BALANCE_NOTES、ASSET_LICENSES、docs/ART_DIRECTION及docs/V05_VALIDATION。不是六套商業逐幀動畫，也沒有實機或人類平衡證據。
+- 下一步只需checkpoint push、嘗試PR、確認main沒有併行新變更後整合並部署／核對雜湊；v0.6與v0.7未開始。若PR API仍Forbidden保留比較分支並記錄，勿假稱已建立PR。

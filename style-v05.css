@@ -1,0 +1,146 @@
+/* Original v0.5 interface skin. Procedural CSS only; no fonts/images/licensed assets.
+   Layout, safe-area metrics, hit areas and combat geometry stay in style.css. */
+:root {
+  --ui-jade:#a6d4ba;
+  --ui-jade-shadow:#325e54;
+  --ui-paper:#f3e8c9;
+  --ui-gold:#e8cf91;
+  --ui-cinnabar:#b56f68;
+  --ui-line:#769b83;
+  --ui-ink:#102d2e;
+}
+body {
+  background:radial-gradient(ellipse at 50% -8%,#345d4d 0,transparent 57%),
+    repeating-linear-gradient(90deg,#1f3b331a 0 1px,transparent 1px 48px),#0c2523;
+}
+.site-header .brand-seal { background:#6e4f3e;box-shadow:inset 0 0 0 3px #253f36,inset 0 0 0 4px #c5a56d,3px 3px #081f1e; }
+.site-header .edition { border-color:#7b916a;color:#d7cfab;background:#173b32; }
+.title-screen { isolation:isolate; }
+.title-lockup h1 { color:var(--ui-paper);text-shadow:2px 2px #6c8d64,5px 5px #143c37; }
+.title-lockup h1 span { color:var(--ui-gold); }
+.title-screen::before,.title-screen::after {
+  content:'';position:absolute;top:16%;width:24px;height:36px;z-index:-1;pointer-events:none;
+  border:2px solid #d9be7e;background:repeating-linear-gradient(90deg,#e3bd79 0 4px,#c99e61 4px 5px);
+  box-shadow:0 -5px 0 -1px #77694b,0 5px 0 -1px #77694b,0 18px 0 -10px #b97668,inset 0 5px #f2d18d,inset 0 -5px #b88958;
+  opacity:.75;
+}
+.title-screen::before { left:5%; }
+.title-screen::after { right:5%; }
+.chapter-kicker,.title-subtitle { color:#d3d6ac; }
+.chapter-badge { color:#c7d8bb; }
+.title-copy { color:#e0e7cd; }
+.overlay .panel {
+  color:var(--ui-paper);border:2px solid #8da98b;
+  background:linear-gradient(135deg,#284e42f5,#123a37f5 62%,#153331f5),
+    repeating-linear-gradient(0deg,#f1d89608 0 1px,transparent 1px 4px);
+  box-shadow:inset 0 0 0 3px #142f2d,inset 0 0 0 4px #8d98604d,4px 4px #071f20;
+  border-radius:2px;
+}
+.overlay .eyebrow { color:#d4c78e; }
+.overlay h1,.overlay h2,.overlay h3 { text-wrap:balance; }
+.overlay h1 { color:var(--ui-paper);text-shadow:2px 2px #102c2d; }
+.overlay p { color:#d0ddc8; }
+.overlay .panel button,
+.hub-nav button,.info-tabs button {
+  border-radius:2px;
+  transition:background-color 100ms ease,border-color 100ms ease,box-shadow 100ms ease,transform 90ms ease;
+}
+.overlay button:not(:disabled):active,
+.hub-nav button:not(:disabled):active,.info-tabs button:not(:disabled):active {
+  transform:translateY(1px);box-shadow:inset 1px 2px #092724;
+}
+.overlay .primary,.overlay .start-button,.overlay button[data-command] {
+  background:linear-gradient(#f0dba2,#d2b778);color:#173b31;border-color:#f8e8bd;
+  box-shadow:inset 0 2px #fff0c9,inset 0 -3px #a58d57,3px 3px #0b2623;
+}
+.overlay .primary:not(:disabled):hover,.overlay button[data-command]:not(:disabled):hover {
+  background:linear-gradient(#f5e4b5,#ddc184);transform:translateY(-1px);
+}
+.overlay .secondary,.overlay button[data-command=resume],.overlay button[data-command=prepare] {
+  border-color:#b8caa0;color:#e6ddb4!important;
+  background:#204a3d!important;box-shadow:inset 0 1px #69987d,3px 3px #0b2623;
+}
+.temple-header { border-bottom:1px solid #8a9d6b66;padding-bottom:6px; }
+.temple-header .resource-line { color:#d1d9b2; }
+.hub-nav button,.info-tabs button {
+  background:linear-gradient(110deg,#234a3e,#163b34);border-color:#668e74;box-shadow:inset 0 1px #88ad7e33,2px 2px #0d2826;
+}
+.hub-nav button[aria-pressed=true],.info-tabs button[aria-pressed=true] {
+  color:#fff1c9;border-color:#eed49b;background:linear-gradient(100deg,#66794d,#355c45);
+  box-shadow:inset 3px 0 #e3c88f,2px 2px #0d2826;
+}
+.hub-content { animation:ui-page-enter 140ms ease-out; }
+.hub-content>h2 { color:#e6d7a4; }
+.hub-content>h2::after { content:'';display:block;width:36px;height:2px;margin-top:6px;background:#cbb780;box-shadow:6px 2px #517b62; }
+.character-grid button,.weapon-card,.upgrade-card,.talent-grid article,
+.route-grid button,.blessing-card {
+  --card-accent:#9fc7a0;
+  background:linear-gradient(125deg,#2c5847,#173e38 75%);
+  border-color:#729b7c;box-shadow:inset 0 2px #9fbd8b22,inset 0 -3px #0b2a28,2px 2px #0c2826;
+}
+.character-grid button>b,.weapon-card strong,.upgrade-card b { color:#f0e4bb; }
+.character-grid button>span,.character-grid button>small,.weapon-card small { color:#bcd6ba; }
+.character-grid button[aria-pressed=true],.weapon-card[aria-pressed=true],
+.talent-grid button[aria-pressed=true],.meta-tabs button[aria-pressed=true] {
+  background:linear-gradient(120deg,#547852,#254f42);border-color:#f0d496;
+  box-shadow:inset 3px 0 #e6cd8c,inset 0 -3px #244539,2px 2px #0c2826;
+}
+.character-portrait { border-color:#91b68d;background:linear-gradient(#466a55,#24483d);box-shadow:inset 0 0 0 2px #16382d; }
+.traveller-detail { background:linear-gradient(115deg,#2b5142,#173b34);border-color:#9bac80;box-shadow:inset 3px 0 #cebc82; }
+.traveller-detail>strong { color:#efd9a3; }
+.talent-grid article>b { color:#e3d3a0; }
+.temple-panel .prep-actions { background:#14372ff7;border-top:2px solid #8b9e72;box-shadow:0 -4px #102f2b99; }
+.temple-panel .prep-actions>span { color:#d7e1bd; }
+.overlay .route-grid button>small { color:#d6d3a4; }
+.relic-icon {
+  color:#f5dca3;border-color:#d1bd85;background:linear-gradient(135deg,#3e6550,#1a3d34);
+  box-shadow:inset 0 0 0 3px #1b3b32,2px 2px #0e2b28;
+}
+.blessing-card.fire { --card-accent:#e5ab81;background:linear-gradient(155deg,#624d40,#243e35); }
+.blessing-card.wood,.blessing-card.wind { --card-accent:#afd393;background:linear-gradient(155deg,#4e6544,#1a3f35); }
+.blessing-card.water { --card-accent:#9dd6d5;background:linear-gradient(155deg,#3e6468,#203f42); }
+.blessing-card.thunder { --card-accent:#c7b3e3;background:linear-gradient(155deg,#59576f,#293f46); }
+.blessing-card .element { color:var(--card-accent);text-shadow:2px 2px #102c2c; }
+.blessing-card .card-number,.blessing-card .pick { color:#e9dcaf; }
+.blessing-card h2 { color:#f5e4b7; }
+.evolution-panel { border-color:#e8d199!important;background:radial-gradient(ellipse at 50% 30%,#355c4f,#173b37 70%)!important; }
+.evolution-seal { color:#fff0be;background:#3e6050;box-shadow:inset 0 0 0 4px #193a32,4px 4px #102b2b; }
+.relic-panel .route-grid button { border-color:#b6b58b; }
+.relic-panel .route-grid button small { color:#f3d9a0; }
+.relic-panel .route-grid button:not(:disabled):hover .relic-icon { border-color:#f9e5b4;background:#4c704e; }
+.build-card { background:linear-gradient(125deg,#284e40,#153a34);border-color:#a3b58a;box-shadow:inset 3px 0 #bdad77; }
+.build-card h3 { color:#edda9f; }
+.codex-entry.known { background:#345740;border-color:#9cad7c;color:#f0d9a0; }
+.codex-entry.unknown { background:#183a31;color:#93ae96;border-style:dashed;border-color:#587862; }
+.history-grid>section { border-bottom:1px solid #77936a66;padding-bottom:8px; }
+.desktop-left,.desktop-right,.desktop-top {
+  border-color:#7d9875!important;
+  box-shadow:inset 0 0 0 2px #102e2a,inset 0 3px #abc18e22;
+}
+.desktop-left .avatar { background:#234e40;border-color:#d0c18d; }
+.desktop-right .info-content h3 { color:#ead8a6; }
+.hud-actions button { box-shadow:inset 0 1px #abcba344,2px 2px #0b2426; }
+.touch-controls button { box-shadow:inset 0 2px #e1edbc33,inset 0 -3px #0b292544; }
+.touch-controls button.pressed { box-shadow:inset 0 2px #0c332d;border-color:#f3dd9f; }
+@media(hover:hover) {
+  .character-grid button:not(:disabled):hover,.weapon-card:not(:disabled):hover,
+  .upgrade-card:not(:disabled):hover,.route-grid button:not(:disabled):hover,
+  .blessing-card:not(:disabled):hover { border-color:var(--card-accent,#e3cd91);filter:brightness(1.06); }
+}
+@keyframes ui-page-enter { from { opacity:.72; } to { opacity:1; } }
+@media(max-width:720px),(max-height:430px) {
+  .title-screen::before,.title-screen::after { display:none; }
+  .overlay .panel { box-shadow:inset 0 0 0 2px #142f2d,inset 0 0 0 3px #8d98604d,2px 2px #071f20; }
+  .temple-header { padding-bottom:4px; }
+  .hub-content>h2::after { display:none; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .hub-content { animation:none; }
+  .overlay .panel button,.hub-nav button,.info-tabs button { transition:none; }
+  .overlay button:not(:disabled):active,.overlay .primary:not(:disabled):hover,
+  .overlay button[data-command]:not(:disabled):hover { transform:none; }
+}
+body[data-reduced-motion=true] .hub-content { animation:none; }
+body[data-reduced-motion=true] .overlay .panel button,
+body[data-reduced-motion=true] .hub-nav button,
+body[data-reduced-motion=true] .info-tabs button { transition:none; }

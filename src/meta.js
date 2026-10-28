@@ -1,3 +1,4 @@
+import {DEFAULT_SETTINGS,normalizeSettings,preferenceValue} from './preferences.js';
 import {RULE_FATES,CODEX,cleanDiscoveries,cleanHistory,cleanSummary} from './progression.js';
 // Versioned, bounded, local-only progression. Storage failures never block play.
 export const STORAGE_KEY='lingqian-journey.meta.v2';
@@ -12,7 +13,7 @@ export const UPGRADE_INFO={
  relic:{name:'法器欄',description:'解鎖靈息（靈力 +10）／青玉（生命 +4）二選一。',cap:1,baseCost:16,costStep:0}
 };
 for(const info of Object.values(UPGRADE_INFO))info.max=info.cap;
-const fresh=()=>({version:3,ruleFate:'none',history:[],discoveries:cleanDiscoveries(),jade:0,unlockedWeapons:[...WEAPON_IDS],selectedWeapon:'sword',unlockedCharacters:[...CHARACTER_IDS],selectedCharacter:'aqian',talentUnlocks:Object.fromEntries(CHARACTER_IDS.map(id=>[id,{a:0,b:0}])),selectedBranches:Object.fromEntries(CHARACTER_IDS.map(id=>[id,'none'])),upgrades:{life:0,spirit:0,fate:0,relic:0},mastery:{sword:0,talisman:0,staff:0},settings:{sound:false,reducedMotion:false},loadout:{fate:'none',relic:'none'},firstWin:false,settledRuns:[]});
+const fresh=()=>({version:3,ruleFate:'none',history:[],discoveries:cleanDiscoveries(),jade:0,unlockedWeapons:[...WEAPON_IDS],selectedWeapon:'sword',unlockedCharacters:[...CHARACTER_IDS],selectedCharacter:'aqian',talentUnlocks:Object.fromEntries(CHARACTER_IDS.map(id=>[id,{a:0,b:0}])),selectedBranches:Object.fromEntries(CHARACTER_IDS.map(id=>[id,'none'])),upgrades:{life:0,spirit:0,fate:0,relic:0},mastery:{sword:0,talisman:0,staff:0},settings:{...DEFAULT_SETTINGS},loadout:{fate:'none',relic:'none'},firstWin:false,settledRuns:[]});
 const integer=(n,min,max)=>Number.isFinite(n)?Math.max(min,Math.min(max,Math.floor(n))):min;
 function sanitize(value){
  if(!value||typeof value!=='object'||Array.isArray(value)||!('jade'in value))return null;
@@ -24,7 +25,7 @@ function sanitize(value){
  for(const character of CHARACTER_IDS){for(const branch of ['a','b'])out.talentUnlocks[character][branch]=integer(value.talentUnlocks?.[character]?.[branch],0,2);const selected=value.selectedBranches?.[character];if(['a','b'].includes(selected)&&out.talentUnlocks[character][selected]>0)out.selectedBranches[character]=selected;}
  for(const id of ['life','spirit','fate','relic'])out.upgrades[id]=integer(value.upgrades?.[id],0,UPGRADE_INFO[id].cap);
  for(const id of WEAPON_IDS)out.mastery[id]=integer(value.mastery?.[id],0,3);
- for(const id of ['sound','reducedMotion'])out.settings[id]=value.settings?.[id]===true;
+ out.settings=normalizeSettings(value.settings);
  out.firstWin=value.firstWin===true;
  out.settledRuns=Array.isArray(value.settledRuns)?[...new Set(value.settledRuns.filter(id=>typeof id==='string'&&id.length>0&&id.length<=120))].slice(-20):[];
  if(out.upgrades.fate&&['shield','unstoppable'].includes(value.loadout?.fate))out.loadout.fate=value.loadout.fate;
@@ -64,7 +65,7 @@ export class MetaStore{
   if(fate!=='none'&&!this.data.upgrades.fate||relic!=='none'&&!this.data.upgrades.relic)return false;
   this.data.loadout={fate,relic};this.save();return true;
  }
- setSetting(name,value){if(!['sound','reducedMotion'].includes(name)||typeof value!=='boolean')return false;this.data.settings[name]=value;this.save();return true;}
+ setSetting(name,value){const safe=preferenceValue(name,value);if(safe===undefined)return false;this.data.settings[name]=safe;this.save();return true;}
  settleRun({id,kills=0,won=false,summary}={}){
   if(typeof id!=='string'||id.length===0||id.length>120||this.data.settledRuns.includes(id))return 0;
   const victory=won===true;const reward=integer(kills,0,1000)*2+(victory?10:0)+(victory&&!this.data.firstWin?10:0);
