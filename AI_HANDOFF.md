@@ -112,3 +112,9 @@
 - This handoff-only checkpoint should also be deployed so version.json points to the final main HEAD. On resume first fetch main and gh-pages (this clone tracks only main by default; use an explicit gh-pages refspec or FETCH_HEAD), read version.json, and compare its sourceCommit/artifact hashes. Retry only publication if needed; do not rebuild completed systems A–E.
 - **Next development stage: v0.5**, after physical Safari/Android touch/toolbar testing and human Boss/Run pacing review. No unfinished v0.4 feature stage remains. Recent-ten-run observatory currently records history; full challenges, cloud saves, second chapter, new characters/weapons remain outside this release.
 - Continue the checkpoint rule: implement → test → fix → retest → commit → push → handoff. Read latest main/history/this log before changing work; preserve other workspaces and never force-push main.
+
+## 2026-10-28 v0.5 啟動盤點
+- 最新main/公開部署均398832c；基線重跑108模型+41瀏覽器通過。新工作分支v05/quality；v0.4公開版在v0.5驗收前保留。
+- 已讀README/code/tests/history及遠端heads；qa分支已合併，v04與main同點。GitHub PR GraphQL被拒，不能宣稱已審查PR討論；Git未廣告PR head refs。
+- 新建GAME_ROADMAP、GAME_DESIGN、BALANCE_NOTES，分清已完工／品質不足／未完成／失效項目。v0.5先品質操作，v0.6與v0.7仍未開始。
+- QA已重現Boss離屏追加敵人、減少動態未套用及角色種子初始化順序問題。下一步先修，再設定／HUD／美術／引導；每階段獨立測試推送。
