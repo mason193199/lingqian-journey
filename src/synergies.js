@@ -2,6 +2,7 @@ import {applyStatus,hasStatus} from './status.js';
 import {trimFriendly} from './budgets.js';
 const relic=(g,id)=>g.relics?.some(r=>r.id===id),evo=(g,id)=>g.build?.evolution===id;
 export const SYNERGIES={
+ fateTempo:{name:'乾元追影',description:'桃木劍＋乾卦＋陰陽玉：有效暴擊後三秒內衝刺，追加一次近身破甲影斬（冷卻1.2秒）。',test:g=>g.player.weapon==='sword'&&g.build?.bagua==='qian'&&relic(g,'yinYang')},
  thunderFork:{name:'九霄連雷',description:'雷罡劍與雷公令：落雷保證跳向最多兩名敵人，仍有冷卻。',test:g=>evo(g,'thunder-sword')&&relic(g,'thunderOrder')},
  fireBloom:{name:'朱砂焰華',description:'離火符與朱砂印：滿層符爆額外射出四枚火符，有冷卻。',test:g=>evo(g,'samadhi-talisman')&&relic(g,'cinnabar')},
  iceLances:{name:'玄冰碎星',description:'玄冰盤與玄冰玉：凍結擊殺射出三枚不再連鎖的冰矢。',test:g=>evo(g,'lunar-ice-disc')&&relic(g,'iceJade')},
@@ -14,13 +15,15 @@ export const SYNERGIES={
  frostSeal:{name:'寒壁留陣',description:'水行與桃木印：撞牆留下短暫冰陣，與既有冰陣共用三個上限。',test:g=>g.build?.element==='water'&&relic(g,'peach')}
 };
 export function initSynergies(g){g.synergies=[];g.synergyNames=[];g.synergyDiscovered=[];g.synergyNotices=[];g.synergyRuntime={cooldowns:{},hadShield:false,depth:0};refreshSynergies(g);}
-export function refreshSynergies(g){if(!g.synergyRuntime)return;g.synergies=Object.keys(SYNERGIES).filter(id=>SYNERGIES[id].test(g));g.synergyNames=g.synergies.map(id=>SYNERGIES[id].name);for(const id of g.synergies)if(!g.synergyDiscovered.includes(id)){g.synergyDiscovered.push(id);g.synergyNotices.push({id,name:SYNERGIES[id].name,life:3});g.synergyNotices=g.synergyNotices.slice(-3);}}
+export function refreshSynergies(g){if(!g.synergyRuntime)return;g.synergies=Object.keys(SYNERGIES).filter(id=>SYNERGIES[id].test(g));if(!g.synergies.includes('fateTempo'))g.synergyRuntime.shadowReady=0;g.synergyNames=g.synergies.map(id=>SYNERGIES[id].name);for(const id of g.synergies)if(!g.synergyDiscovered.includes(id)){g.synergyDiscovered.push(id);g.synergyNotices.push({id,name:SYNERGIES[id].name,life:3});g.synergyNotices=g.synergyNotices.slice(-3);}}
 export const hasSynergy=(g,id)=>SYNERGIES[id]?.test(g)||false;
 const others=(g,e,r=240)=>g.enemies.filter(v=>v!==e&&v.hp>0&&Math.hypot(v.x-e.x,v.y-e.y)<r).slice(0,4);
 function ready(g,key,seconds){const c=g.synergyRuntime?.cooldowns;if(!c||(c[key]||0)>0)return false;c[key]=seconds;return true;}
 function bolt(g,x,y,target,weapon='staff',damage=7){const a=Math.atan2(target.y+target.h/2-y,target.x+target.w/2-x);g.projectiles.push({x,y,vx:Math.cos(a)*340,vy:Math.sin(a)*340,r:7,life:1.2,hostile:false,weapon,damage,characterSource:true,homing:true});trimFriendly(g);}
 function shockwave(g,e){for(const v of others(g,e,150)){applyStatus(v,'armorbreak',2);if(v.type!=='boss'&&!hasStatus(v,'unstoppable')){v.vx=Math.sign(v.x-e.x||1)*260;v.knockbackTimer=.16;v.stun=Math.max(v.stun,.15);v.wallProc=false;}}g.visual('rune',e.x,e.y,'#eed8ad');}
 export function synergyEvent(g,kind,e){const rt=g.synergyRuntime;if(!rt||rt.depth)return;rt.depth++;try{
+ if(kind==='critical'&&hasSynergy(g,'fateTempo')&&ready(g,'fateTempo',1.2)){rt.shadowReady=3;g.visual('critical',g.player.x+19,g.player.y+15,'#e7d59e',.3);}
+ if(kind==='dash'&&hasSynergy(g,'fateTempo')&&(rt.shadowReady||0)>0){rt.shadowReady=0;for(const v of g.enemies.filter(v=>v.hp>0&&(v.x-g.player.x)*g.player.facing>-20&&(v.x-g.player.x)*g.player.facing<145&&Math.abs(v.y+v.h/2-g.player.y-g.player.h/2)<100).slice(0,3)){g.damageEnemy(v,8,{periodic:true,proc:true});applyStatus(v,'armorbreak',1.5);}g.visual('sword-hit',g.player.x+19+g.player.facing*65,g.player.y+25,'#e6d2ff',.4);}
  if(kind==='lightning'&&hasSynergy(g,'thunderFork')&&ready(g,'thunderFork',.8))for(const v of others(g,e).slice(0,2)){g.damageEnemy(v,5,{periodic:true,proc:true});g.visual('lightning',v.x,v.y,'#e0c6ff');}
  if(kind==='fire'&&hasSynergy(g,'fireBloom')&&ready(g,'fireBloom',1)){for(const angle of [-2.7,-.45,.45,2.7])g.projectiles.push({x:e.x+e.w/2,y:e.y+e.h/2,vx:Math.cos(angle)*300,vy:Math.sin(angle)*300,r:7,life:.8,hostile:false,weapon:'talisman',damage:5,characterSource:true});trimFriendly(g);}
  if(kind==='kill'){
@@ -38,4 +41,4 @@ export function synergyEvent(g,kind,e){const rt=g.synergyRuntime;if(!rt||rt.dept
  }
  if(kind==='shieldLost'&&hasSynergy(g,'mountainGuard')&&ready(g,'mountainGuard',5))shockwave(g,g.player);
  }finally{rt.depth--;}}
-export function tickSynergies(g,dt){refreshSynergies(g);for(const key of Object.keys(g.synergyRuntime.cooldowns))g.synergyRuntime.cooldowns[key]=Math.max(0,g.synergyRuntime.cooldowns[key]-dt);const shield=hasStatus(g.player,'shield');if(g.synergyRuntime.hadShield&&!shield)synergyEvent(g,'shieldLost');g.synergyRuntime.hadShield=shield;for(const n of g.synergyNotices)n.life-=dt;g.synergyNotices=g.synergyNotices.filter(n=>n.life>0);}
+export function tickSynergies(g,dt){refreshSynergies(g);g.synergyRuntime.shadowReady=Math.max(0,(g.synergyRuntime.shadowReady||0)-dt);for(const key of Object.keys(g.synergyRuntime.cooldowns))g.synergyRuntime.cooldowns[key]=Math.max(0,g.synergyRuntime.cooldowns[key]-dt);const shield=hasStatus(g.player,'shield');if(g.synergyRuntime.hadShield&&!shield)synergyEvent(g,'shieldLost');g.synergyRuntime.hadShield=shield;for(const n of g.synergyNotices)n.life-=dt;g.synergyNotices=g.synergyNotices.filter(n=>n.life>0);}

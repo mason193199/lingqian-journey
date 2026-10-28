@@ -27,16 +27,18 @@ const center=e=>({x:e.x+e.w/2,y:e.y+e.h/2});
 const alive=g=>g.enemies.filter(e=>e.hp>0);
 const near=(a,b,r)=>Math.hypot(a.x-b.x,a.y-b.y)<=r;
 export function initBuild(g,options={}){
- g.build=null;g.evolutionFields=[];g.buildNotices=[];
+ g.buildV6=options.buildV6===true;g.build=null;g.evolutionFields=[];g.buildNotices=[];
  if(!options.build&&!options.element&&!options.bagua)return;
  g.build={element:null,bagua:null,evolution:null,hits:0,earthCd:0,waterHits:0,beams:[],serial:0};
  if(ELEMENTS[options.element])g.build.element=options.element;if(BAGUA[options.bagua])g.build.bagua=options.bagua;
  refresh(g,false);
+ if(g.buildV6){if(!g.blessingOptions){const ids=[...(g.availableBlessings||['fire','wood','wind'])];for(let i=ids.length-1;i>0;i--){const j=Math.floor((g.random?g.random():Math.random())*(i+1));[ids[i],ids[j]]=[ids[j],ids[i]];}g.blessingOptions=ids.slice(0,3);}return;}
  const wanted={sword:'thunder',talisman:'fire',staff:'water'}[g.player.weapon];const list=[...(g.blessingOptions||['fire','wood','wind'])];if(!list.includes(wanted))list[list.length-1]=wanted;g.blessingOptions=list;
 }
 function refresh(g,notice=true){const r=EVOLUTIONS[g.player.weapon],b=g.build;const next=r.element===b.element&&r.bagua===b.bagua?r.id:null;if(b.evolution===next)return;b.evolution=next;b.hits=0;g.evolutionFields=[];if(next&&notice){g.buildNotices.push({...r});g.visual('blessing',g.player.x+19,g.player.y+29,ELEMENTS[b.element].color,1);}}
 export function attune(g,element,bagua){if(!g.build||!ELEMENTS[element]||!BAGUA[bagua])return false;g.build.element=element;g.build.bagua=bagua;refresh(g);return true;}
-export function onBlessingBuild(g,id){const map={thunder:['metal','zhen'],fire:['fire','li'],water:['water','kan'],wood:['wood','xun'],wind:['wood','xun']};return map[id]?attune(g,...map[id]):false;}
+export function attuneComponent(g,slot,id){if(!g.build||g.build[slot]===id||!(slot==='element'?Object.hasOwn(ELEMENTS,id):slot==='bagua'?Object.hasOwn(BAGUA,id):false))return false;g.build[slot]=id;refresh(g);return true;}
+export function onBlessingBuild(g,id){const map={thunder:['metal','zhen'],fire:['fire','li'],water:['water','kan'],wood:['wood','xun'],wind:['wood','xun']};return map[id]?(g.buildV6?attuneComponent(g,'element',map[id][0]):attune(g,...map[id])):false;}
 export function blast(g,source,damage,radius,kind='rune',ignite=false){const q=center(source);for(const e of alive(g).filter(e=>e!==source&&near(center(e),q,radius)).slice(0,5)){g.damageEnemy(e,damage,{periodic:true,proc:true});if(ignite&&e.hp>0)applyStatus(e,'burn',2);}g.visual(kind,q.x,q.y,kind==='lightning'?'#e0c6ff':kind==='ice'?'#b3e9ef':'#ffbf8c',.45);}
 export function strikeLightning(g,e,damage){damage*=1+.08*(g.elementRanks?.metal||0);g.damageEnemy(e,damage,{periodic:true,proc:true});const q=center(e);g.build.beams.push({x:q.x,y:q.y-140,x2:q.x,y2:q.y,life:.22});g.build.beams=g.build.beams.slice(-8);g.visual('lightning',q.x,q.y,'#e0c6ff',.4);g.onLightning?.(e,damage);synergyEvent(g,'lightning',e);}
 export function evolutionAttack(g){const b=g.build;if(!b)return;

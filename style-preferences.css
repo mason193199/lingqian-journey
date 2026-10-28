@@ -13,3 +13,6 @@ body[data-game-state=playing] .game-shell{touch-action:none}
 body[data-touch=true] .game-shell select,body[data-touch=true] .game-shell input,body[data-touch=true] #settings-dialog select,body[data-touch=true] #settings-dialog input{font-size:16px}
 .game-shell{touch-action:pan-y}
 body[data-game-state=playing] .game-shell{touch-action:none}
+.build-guide{padding:10px;border:1px solid #a3b887;background:#173c37;margin:8px 0}.build-guide summary{cursor:pointer;color:#ecd092;font-size:13px}.build-guide-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}.build-guide-grid article{padding:8px;border:1px solid #688b73}.build-guide-grid h3{font-size:14px;margin:2px 0}.build-guide-grid p,.build-guide-grid small{font-size:10px;line-height:1.6}.boss-caption>span:last-child{letter-spacing:0}@media(max-width:720px){.build-guide-grid{grid-template-columns:1fr}#hud-layer .boss-caption>span:last-child{display:block;font-size:8px}.boss-caption{flex-wrap:wrap;gap:2px}}
+body[data-touch=true] #hud-layer .boss-caption>span:last-child{display:block;font-size:8px}.boss-caption{overflow-wrap:anywhere}
+body[data-touch=true] #hud-layer .boss-caption>span:last-child{font-size:10px;font-weight:600;line-height:1.35}

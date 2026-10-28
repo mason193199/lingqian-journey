@@ -22,7 +22,7 @@ export function roomAction(g,action,data={}){const r=g.run;if(!r||!['room','even
  if(action==='leave'){if(!r.cleared.includes(r.roomId)){r.cleared.push(r.roomId);clearRelics(g,r.roomId);}return showRoutes(g);}
  if(r.used)return false;
  if(action==='heal'&&r.type==='heal'){if(g.player.hp>=g.player.maxHp)return false;g.player.hp=Math.min(g.player.maxHp,g.player.hp+30);r.used=true;r.revision++;return true;}
- if(action==='attune'&&r.type==='altar'&&ELEMENTS[data.element]&&BAGUA[data.bagua]){r.used=true;r.revision++;return g.attune(data.element,data.bagua);}
+ if(action==='attune'&&r.type==='altar'&&ELEMENTS[data.element]&&BAGUA[data.bagua]){if(g.buildV6&&!['element','bagua'].includes(data.slot))return false;const ok=g.buildV6?g.attuneOne(data.slot==='element'?'element':'bagua',data.slot==='element'?data.element:data.bagua):g.attune(data.element,data.bagua);if(!ok)return false;r.used=true;r.revision++;return true;}
  return false;
 }
 export function describeRoute(g,choice){let text=choice.type==='event'?EVENTS[choice.eventId].name+' · '+choice.description:choice.description;if(relicOf(g,'compass')){text+=' · '+roomIntel(g,choice.type);if(relicOf(g,'compass').quality>=1)text+=' · 預報：'+(choice.type==='elite'?'三名強化妖靈':choice.type==='combat'?'近戰＋遠程':choice.type==='boss'?'重擊、衝撞、半血彈幕':'安全服務房');if(relicOf(g,'compass').quality>=2)text+=' · 下層預兆：'+(routePools(g)[g.run.floor+2]?[...new Set(routePools(g)[g.run.floor+2])].map(t=>ROOM_TYPES[t].name).join('／'):'最後一戰');}return text;}
