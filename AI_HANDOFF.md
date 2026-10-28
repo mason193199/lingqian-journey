@@ -1,8 +1,22 @@
-# AI 開發交接 — v0.4
+# AI 開發交接 — v0.5
 
-日期：2026-10-27。
+日期：2026-10-28。
 
-## 目前最新：v0.4 已完成
+## 目前最新：v0.5 已完成，下一個功能版本是 v0.6
+
+- 最新經完整驗收的遊戲程式：**9178f437dbf7f269bf69c54002e4d00662521703**。後續交接文件提交不改程式；遠端main最終HEAD與Pages version.json應一致。
+- 版本0.5.0；**126模型＋48 Chromium情境全部通過**，production build／桌面與手機尺寸子路徑／獨立HTML／diff check通過。不是實機Safari/Android/Edge驗收。
+- 基線v04 main398832c已核對並保存在v04/integration；新功能先在v05/quality實作、獨立唯讀QA重現問題／修正／再驗證，再安全fast-forward main。PR建立實際嘗試但GraphQL Forbidden；比較：https://github.com/mason193199/lingqian-journey/compare/398832c...v05/quality ，不要假稱有PR編號。
+- 完成：偏好存檔與安全觸控尺寸／透明度／三位置、renderer品質／減少動態／震動／文字、音效與原創基礎旋律音量、H與1–4/F2快捷、完整狀態／繁中路線、像素/UI細化、真實動作引導／略過／重播、staff短蓄力／dash取消／落地。
+- 修復：Boss事件小怪離屏、種子角色抽選順序、reducedMotion接線；新增modal reset Esc穿透、空中教學baseline、跨房幽靈蓄力回歸，獨立QA已複查。手機菜單保留gear而不把HP蓋到基地標題。
+- 新入口：src/preferences.js／settings-ui.js／audio.js／tutorial.js／tuning.js。Game.presentation純畫面偏好，Game.combatV3僅正常冒險啟用；診斷直接開始保留舊節奏以回歸。後續地形要提供player.groundY給引導，不能再用空中腳底當跳躍基準。
+- 首次v0.5部署gh-pages **dccf364cb126e090ec6cf95a605764d9cb814c4a**，source9178f43、6/6產物雜湊一致。最終交接HEAD仍應重新部署一次並核對；若下次version.json已對應main，就不要重做部署或功能。
+- 公開網址：https://mason193199.github.io/lingqian-journey/ 。沿用gh-pages root無需設定；CDN直接回查仍被雲端代理CONNECT403阻擋，只確認Git來源／產物一致，未假稱外部HTTP成功。
+- 下一步三項：實機Safari/Android操作與音訊驗收；Boss攻防／Build成形機率的人類體驗與種子樣本；小型可讀地形／可拒絕天劫。v0.6/v0.7未開始，完整逐幀角色美術與正式場景配樂也未宣稱完成。
+- 續作先fetch main/history/本文件/GAME_ROADMAP/未合併分支；若v0.5發布相符，從v0.6最優先項目繼續，不重做已完工。每階段test→fix→retest→commit→push→handoff；不force、不覆蓋原工作區草稿。
+
+
+## v0.4 歷史完成基線
 
 - 最新經完整驗證的遊戲程式 commit：**8e1db1c575fd09b9f9431d50704a496a1a758f75**；後續交接文件提交不改變遊戲程式。遠端 main 的最終 HEAD 與 Pages version.json 應一致。
 - 版本0.4.0；最終 **108/108 邏輯測試、41/41 Chromium 瀏覽器測試、production build／子路徑／獨立HTML測試** 全通過。詳見 docs/V04_VALIDATION.md。
