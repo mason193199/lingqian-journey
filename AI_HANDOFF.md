@@ -139,3 +139,9 @@
 - 修Boss離屏事件敵人、種子初始化、reducedMotion未接線；獨立QA再重現modal穿透／空中教學／跨房幽靈蓄力，均加測修正並複查。手機菜單只保留齒輪，不讓戰鬥血條遮基地。
 - 具體來源／品質限制／測量見GAME_ROADMAP、GAME_DESIGN、BALANCE_NOTES、ASSET_LICENSES、docs/ART_DIRECTION及docs/V05_VALIDATION。不是六套商業逐幀動畫，也沒有實機或人類平衡證據。
 - 下一步只需checkpoint push、嘗試PR、確認main沒有併行新變更後整合並部署／核對雜湊；v0.6與v0.7未開始。若PR API仍Forbidden保留比較分支並記錄，勿假稱已建立PR。
+
+## v0.5.1 urgent mobile zoom fix — 2026-10-28
+- User reports unintended zoom remains. Confirmed hit target is game-shell because world/canvas are pointer-transparent; canvas touch-action alone did not cover gameplay.
+- Added src/gestures.js: element-scoped non-passive multi-touch and Safari gesture prevention, gameplay double-touchend fallback, immediate state getter. Gameplay shell none, menus pan-y; native single taps/form controls and outside page zoom preserved. Game selects/inputs16px to prevent iOS focus autozoom. No global maximum-scale/user-scalable prohibition.
+- Validation:126 model +51 Chromium scenarios, production build/subpath/standalone and diff check passed. New tests include actual CDP repeated multi-touch/pinch, native gesture default prevention, rapid touchend and one-finger menu/form fallback. Not proof of physical Safari acceptance.
+- Publish this urgent checkpoint first; then resume v06/combat-build for Boss attack/counter windows and less automatic Build formation, without implementing all v0.6/v0.7 systems at once.

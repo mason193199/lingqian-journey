@@ -23,7 +23,7 @@ canvas.width=1280;canvas.height=720;
 const store=new MetaStore();const diagnostics=new URLSearchParams(location.search).has('test');let runId=null,runReward=0,hubTab='characters';
 const game=new Game();const overlay=document.querySelector('#overlay');
 let last=performance.now(),previous='',sound=!!store.data.settings.sound;
-const controls=createControls(document.querySelector('.game-shell'),{onPause:pause,onBlur:()=>{if(game.state==='playing')game.state='paused';}});
+const controls=createControls(document.querySelector('.game-shell'),{isPlaying:()=>game.state==='playing',onPause:pause,onBlur:()=>{if(game.state==='playing')game.state='paused';}});
 function clearInput(){controls.clear();}
 const audioEngine=createAudioEngine(()=>store.data.settings);
 const tutorial=new Tutorial({completed:store.data.settings.tutorialDone});

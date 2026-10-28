@@ -7,3 +7,9 @@ body[data-game-state=title] #hud-layer .hud,body[data-game-state=preparing] #hud
 /* Keep settings reachable after returning to any paused/menu screen. */
 body:not([data-game-state=playing]) #hud-layer .hud{z-index:9}body:not([data-game-state=playing]) #hud-layer .hud-actions{visibility:visible}body:not([data-game-state=playing]) #hud-layer .hud-actions>button:not(#settings){display:none}
 body:not([data-game-state=playing]) #hud-layer .hud .player-status,body:not([data-game-state=playing]) #hud-layer .hud .journey-status{visibility:hidden}
+/* The world layer is pointer-transparent: its canvas touch-action alone cannot
+   protect the actual hit target (game-shell) against Safari pinch/double taps. */
+body[data-game-state=playing] .game-shell{touch-action:none}
+body[data-touch=true] .game-shell select,body[data-touch=true] .game-shell input,body[data-touch=true] #settings-dialog select,body[data-touch=true] #settings-dialog input{font-size:16px}
+.game-shell{touch-action:pan-y}
+body[data-game-state=playing] .game-shell{touch-action:none}

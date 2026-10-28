@@ -1,7 +1,9 @@
+import {installGameGestures} from './gestures.js';
 const BINDINGS={KeyA:'left',ArrowLeft:'left',KeyD:'right',ArrowRight:'right',Space:'jump',KeyW:'jump',ArrowUp:'jump',KeyJ:'attack',KeyZ:'attack',KeyK:'dash',ShiftLeft:'dash',ShiftRight:'dash',KeyX:'dash',KeyE:'skill',KeyL:'skill'};
 const editable=target=>target?.closest?.('input,textarea,select,[contenteditable=true],dialog[open]');
 // Track physical keys and individual fingers, rather than only logical actions.
-export function createControls(root,{onPause=()=>{},onBlur=()=>{}}={}){
+export function createControls(root,{onPause=()=>{},onBlur=()=>{},isPlaying}={}){
+ installGameGestures(root,{isPlaying});
  const keys=new Set(),pointers=new Map();let edges={};
  const paint=button=>button.classList.toggle('pressed',[...pointers.values()].some(p=>p.button===button));
  function release(e){const p=pointers.get(e.pointerId);if(!p)return;pointers.delete(e.pointerId);paint(p.button);try{if(p.button.hasPointerCapture?.(e.pointerId))p.button.releasePointerCapture(e.pointerId);}catch{}}
