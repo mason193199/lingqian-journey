@@ -1,8 +1,21 @@
-# AI 開發交接 — v0.5
+# AI 開發交接 — v0.6 第一切片
 
 日期：2026-10-28。
 
-## 目前最新：v0.5 已完成，下一個功能版本是 v0.6
+## 目前最新：手機多指修補＋v0.6第一個可玩切片已完成
+
+- 最新完整驗收程式commit：**e445305d1662debae145d2321704f93ef6d4cf29**，後續交接文件提交不改遊戲；最終main HEAD應與Pages version.json一致。
+- 先發布緊急手機修補304827b，再於v06/combat-build實作Boss/Build切片，137模型＋54 Chromium情境、production/subpath/standalone、diff check全通過，字級調整後6相關UI/gesture情境重跑通過。
+- 使用者已確認放大情境是左右移動＋攻擊多指操作。修補保護實際hit target game-shell，非passive touch／Safari gesture／rapid touchend，遊戲菜單pan-y與16px表單、遊戲外縮放保留。這是已完成程式與模擬驗收，不是使用者確認實體Safari修補已通過；下次先讀新的實機回饋，不重做舊修補或聲稱實機已驗證。
+- 正常Run新增encounterV6/buildV6：Boss仍286HP/原攻傷，兩道守印／兩式後反擊窗口；初始種子命籤不強塞匹配、只定五行，祭壇一次一欄並顯示預覽；八流派指南＋第11協同乾元追影（有效暴擊→三秒內衝刺影斬，垂直/冷卻/目標上限）。經典診斷fixtures仍保留舊規則；正常準備→開始使用新規則。
+- 獨立QA驗證18個無進化組合可過Boss，也修正左右牆判定與空中影斬穿地。137測試含18進化loadout、900種子、無效／同值祭壇、壞ID及原有存檔／效能回歸。真實人類平衡仍需回饋。
+- 首次v0.6部署gh-pages **3cde35a09cfb6e3dfb53030423cf485df631d2fa**，source e445305、6/6產物雜湊一致。最終handoff HEAD也應部署並核對；若下次version.json已對應main則發布完成，不重做。
+- 公開網址：https://mason193199.github.io/lingqian-journey/ 。直接CDN回查仍為雲端CONNECT403，沒有外部HTTP成功證據。建立本輪PR也實際嘗試但GraphQL Forbidden；分支與比較入口保留：https://github.com/mason193199/lingqian-journey/compare/304827b...v06/combat-build 。不是假稱已有PR編號。
+- **v0.6尚未整版完成**：下一切片才做少量可讀地形／探索與可拒絕天劫、其餘角色招式深度；Boss變體等要先看正常版實玩。v0.7仍未開始。勿把缺項做成假按鈕或重做已完成Boss/Build。
+- 續作：fetch最新main/history/AI_HANDOFF/GAME_ROADMAP/未合併分支，先確認實機新回饋與版本；每階段test→fix→retest→commit→push→handoff。不force、不動另一工作區未提交草稿。
+
+
+## v0.5 歷史完成基線
 
 - 最新經完整驗收的遊戲程式：**9178f437dbf7f269bf69c54002e4d00662521703**。後續交接文件提交不改程式；遠端main最終HEAD與Pages version.json應一致。
 - 版本0.5.0；**126模型＋48 Chromium情境全部通過**，production build／桌面與手機尺寸子路徑／獨立HTML／diff check通過。不是實機Safari/Android/Edge驗收。

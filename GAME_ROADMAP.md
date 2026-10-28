@@ -21,7 +21,7 @@
 
 驗收：126模型／48 Chromium情境、production build／子路徑／獨立HTML全通過。確定的Boss離屏敵人、種子順序、減少動態接線、modal穿透、空中引導與跨房蓄力已修；細節見docs/V05_VALIDATION.md。角色逐幀美術、實機手機與人類Boss平衡尚不足，不宣稱正式商業成品。
 
-## v0.6 — 第一切片已驗收：玩法深度
+## v0.6 — 第一切片已發布，其餘未完：玩法深度
 
 已完成：Boss雙印攻防／反擊窗口、種子命籤與一次一欄祭壇、八流派指南／乾元追影，以及手機原生多指縮放修補。137模型＋54瀏覽器與production通過，詳見docs/V06_SLICE1.md。
 
@@ -36,3 +36,5 @@
 每個穩定階段：實作→測試→修復→再測試→commit→push→交接。測試分支先驗收；main/公開gh-pages只收穩定成果，禁止force push。中斷先保存清楚標記的工作分支；下次讀最新main、commit、AI_HANDOFF與本文件，接未完成階段，不重做。
 
 發布記錄：v0.5程式9178f43，main已安全整合；初次gh-pages dccf364的version.json與6/6產物雜湊已核對。最後交接文件HEAD再部署並核對即可。公開CDN回查為代理CONNECT403，沒有宣稱實際HTTP成功；v04/integration仍保留398832c作為回復基線。
+
+最新發布：手機多指修補304827b已先上線；v0.6首切片程式e445305已整合main，首部署3cde35a來源與6/6產物核對。137模型／54瀏覽器／production通過，仍待實體Safari與人類Boss回饋。最終交接HEAD也要發布；若version.json已對應main就接下一切片，不重做。
