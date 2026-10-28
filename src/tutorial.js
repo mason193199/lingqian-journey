@@ -8,6 +8,7 @@ const STEPS = Object.freeze([
  {id:'skill',title:'旅人的天賦',text:'按 E／L 或天賦鍵施放專屬技能；冷卻時等一等。'}
 ]);
 const CONTEXT = Object.freeze({
+ 'trial-offer':{title:'逆命由你決定',text:'天劫只影響這一房；接受後獲勝才領獎，拒絕沒有額外懲罰。'},
  blessing:{title:'一籤一種選擇',text:'命籤只影響本局；先看武器配方，再決定要成形或混搭。'},
  evolving:{title:'Build 成形了',text:'武器×五行×卦象已共鳴，攻擊方式會改變；讀完能力再繼續。'},
  'relic-choice':{title:'法器改變打法',text:'選一件與武器、角色或狀態呼應的法器；可在資訊頁查看協同。'},

@@ -1,3 +1,4 @@
+import {trialSkillFactor,trialSkillLock} from './trials.js';
 import {trimFriendly} from './budgets.js';
 import {applyStatus,hasStatus} from './status.js';
 
@@ -93,7 +94,7 @@ export function characterKill(g,e){
 }
 export function useSkill(g){
  const c=g.character;if(!c||c.skillCd>0||!['playing','blessing'].includes(g.state)||g.player.hp<=0)return false;
- if(hasStatus(g.player,'freeze'))return false;
+ if(hasStatus(g.player,'freeze')||trialSkillLock(g)>0)return false;
  if(g.state==='blessing'&&c.id!=='aqian')return false;
  if(c.id==='xuanmo'&&c.rage<=0)return false;
  const p=g.player,origin=center(p),targets=alive(g);
@@ -117,7 +118,7 @@ export function useSkill(g){
 }
 export function tickCharacter(g,dt){
  const c=g.character;if(!c||g.state!=='playing')return;
- c.skillCd=Math.max(0,c.skillCd-dt);c.luckyTime=Math.max(0,c.luckyTime-dt);if(c.luckyShieldPending&&c.luckyTime===0){c.luckyShieldPending=false;applyStatus(g.player,'shield',4,{amount:15});}g.player.luckBonus=c.luckyTime>0?.2:0;c.summonPowerTime=Math.max(0,c.summonPowerTime-dt);
+ c.skillCd=Math.max(0,c.skillCd-dt*trialSkillFactor(g));c.luckyTime=Math.max(0,c.luckyTime-dt);if(c.luckyShieldPending&&c.luckyTime===0){c.luckyShieldPending=false;applyStatus(g.player,'shield',4,{amount:15});}g.player.luckBonus=c.luckyTime>0?.2:0;c.summonPowerTime=Math.max(0,c.summonPowerTime-dt);
  if(talent(g,'qingyue','b')){const dashing=g.player.dashTime>0;if(dashing&&!c.dashWasActive){let hit=false;for(const e of alive(g))if((center(e).x-center(g.player).x)*g.player.facing>-20&&(center(e).x-center(g.player).x)*g.player.facing<180&&Math.abs(center(e).y-center(g.player).y)<100){hit=true;g.damageEnemy(e,20,{knockback:200,direction:g.player.facing,heavy:true});}if(hit&&talent(g,'qingyue','b',2))applyStatus(g.player,'shield',3,{amount:12});aura(g,'critical');}c.dashWasActive=dashing;}
  if(talent(g,'baili','a')&&g.summons.length){c.guardTimer-=dt;if(c.guardTimer<=0){c.guardTimer+=4;applyStatus(g.player,'shield',3,{amount:10});if(talent(g,'baili','a',2)&&!g.noHealing&&g.passiveHealingBudget>0){const heal=Math.min(2,g.passiveHealingBudget,g.player.maxHp-g.player.hp);g.player.hp+=heal;g.passiveHealingBudget-=heal;}aura(g,'purify');}}
  const shieldNow=(g.player.statuses||[]).some(s=>s.id==='shield'&&s.remaining>0&&s.shield>0);if(talent(g,'xuanmo','b')&&c.shieldPresent&&!shieldNow){for(const e of alive(g))if(Math.hypot(center(e).x-center(g.player).x,center(e).y-center(g.player).y)<185){g.damageEnemy(e,18,{knockback:210,direction:center(e).x>=center(g.player).x?1:-1,heavy:true});if(talent(g,'xuanmo','b',2)&&e.hp>0)applyStatus(e,'freeze',.4);}aura(g,'slam');}c.shieldPresent=shieldNow;

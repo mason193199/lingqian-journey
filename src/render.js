@@ -1,3 +1,4 @@
+import {TRIAL_TUNING} from './trials.js';
 // All art is drawn at 640 × 360, then enlarged with nearest-neighbour sampling.
 // World geometry remains 1280 × 720: rendering never changes combat hitboxes.
 const W=1280,H=720,F=585;
@@ -168,7 +169,7 @@ function enemy(c,e,time){const x=e.x+e.w/2,y=e.y+e.h;box(c,x-e.w*.5,y+1,e.w,4,'#
  statusAura(c,e,time,true);
  if(e.hp<e.maxHp&&e.hp>0){const w=e.type==='boss'?90:46,yy=e.type==='boss'?y-180:y-e.h-14;box(c,x-w/2-2,yy-2,w+4,8,P.ink);box(c,x-w/2,yy,w,4,'#5d716d');box(c,x-w/2,yy,w*e.hp/e.maxHp,4,e.type==='boss'?'#e8b2a0':P.gold);}
 }
-function telegraphs(c,g,time){for(const z of g.zones||[]){const progress=1-z.life/z.maxLife;const yy=F-6;c.globalAlpha=.28;box(c,z.x,F-44,z.w,43,'#e88e89');c.globalAlpha=1;box(c,z.x,yy,z.w,6,'#df8b8f');box(c,z.x,yy,z.w*progress,3,'#ffe1b0');for(let x=z.x+9;x<z.x+z.w;x+=22){box(c,x,F-22,4,10,'#ffceac');box(c,x+4,F-26,4,4,'#ffceac');box(c,x+8,F-22,4,10,'#ffceac');}box(c,z.x,F-37,3,31,'#ffd2af');box(c,z.x+z.w-3,F-37,3,31,'#ffd2af');}}
+function telegraphs(c,g,time){const warning=g.run?.trial?.phase==='active'&&g.run.trial.warning;if(warning){const x=warning.x-TRIAL_TUNING.width/2,w=TRIAL_TUNING.width,progress=1-warning.remaining/TRIAL_TUNING.warning;c.globalAlpha=.22;box(c,x,F-TRIAL_TUNING.height,w,TRIAL_TUNING.height,'#c8b4ef');c.globalAlpha=1;box(c,x,F-8,w,6,'#9c88ce');box(c,x,F-8,w*progress,3,'#fff0c2');for(let yy=F-TRIAL_TUNING.height;yy<F;yy+=14){box(c,x,yy,3,8,'#e8d7ff');box(c,x+w-3,yy,3,8,'#e8d7ff');}text(c,'雷',warning.x,F-TRIAL_TUNING.height-12,20,'#f4dcff');}for(const z of g.zones||[]){const progress=1-z.life/z.maxLife;const yy=F-6;c.globalAlpha=.28;box(c,z.x,F-44,z.w,43,'#e88e89');c.globalAlpha=1;box(c,z.x,yy,z.w,6,'#df8b8f');box(c,z.x,yy,z.w*progress,3,'#ffe1b0');for(let x=z.x+9;x<z.x+z.w;x+=22){box(c,x,F-22,4,10,'#ffceac');box(c,x+4,F-26,4,4,'#ffceac');box(c,x+8,F-22,4,10,'#ffceac');}box(c,z.x,F-37,3,31,'#ffd2af');box(c,z.x+z.w-3,F-37,3,31,'#ffd2af');}}
 function travellerSkillMotif(c,id,e,age,time,facing){
  if(age>.8)return;const x=e.x,y=e.y;
  if(id==='aqian'&&e.kind==='blessing'){bagua(c,x,y,25+age*40,time);}

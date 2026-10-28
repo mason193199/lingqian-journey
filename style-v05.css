@@ -144,3 +144,13 @@ body[data-reduced-motion=true] .hub-content { animation:none; }
 body[data-reduced-motion=true] .overlay .panel button,
 body[data-reduced-motion=true] .hub-nav button,
 body[data-reduced-motion=true] .info-tabs button { transition:none; }
+/* v0.6: only two deliberate risks; the unchanged elite is a separate exit. */
+.trial-panel .route-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin:12px 0;gap:12px}
+.trial-panel .route-grid button{min-width:0;margin:0;border-color:#b49ac2;background:linear-gradient(150deg,#334147,#233337)}
+.trial-panel .route-grid strong{display:block;color:#f0d49c;font-size:12px;line-height:1.6}
+.trial-panel .primary{max-width:100%;white-space:normal}
+body[data-touch=true] .trial-panel{max-width:760px}
+body[data-touch=true] .trial-panel .route-grid{gap:8px;margin:8px 0}
+body[data-touch=true] .trial-panel .route-grid button{padding:9px}
+body[data-touch=true] .trial-panel .relic-icon{font-size:24px}
+body[data-touch=true] .trial-panel .route-grid p{font-size:11px;margin:5px 0}
