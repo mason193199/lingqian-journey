@@ -1,8 +1,23 @@
-# AI 開發交接 — v0.6 第一切片
+# AI 開發交接 — v0.6 第二切片
 
 日期：2026-10-28。
 
-## 目前最新：手機多指修補＋v0.6第一個可玩切片已完成
+## 目前最新：v0.6.1 自選單房天劫已驗收
+
+- 最新完整驗收程式commit：**c05494768f7ab1844b37252b403e1188eccde58d**。後續只更新交接；最終main HEAD應與gh-pages/version.json的sourceCommit一致。
+- 從72b4108續作，先確認遠端main／Pages來源一致，保留另一工作區草稿及既有穩定分支。新分支**v06/optional-trials**；未重做手機防縮放、Boss／Build等已完成項目。
+- 正式Run啟用trialsV6：精英房先暫停，選五雷／封靈或無代價拒絕。五雷固定位置前搖0.95秒、4秒節奏、12傷，可移動／跳高／衝刺；封靈起手4秒封技、35%自然回靈、60%技能冷卻恢復。兩種勝利各一次額外靈錢及稀有／珍奇法器，全法器滿品質替代12靈錢。只影響一房，不改永久存檔。
+- src/trials.js集中參數與roomId綁定狀態。configureCombat只在決策後消耗一次；清房先產生路線再發法器選項，換房清空；事件守墓精英仍用原流程。技能按鈕封印倒數、像素雷區／標記及旅程完成數接線，手機卡片可捲動。
+- QA發現並修正：只有恢復減速的封靈原本短戰鬥無實際代價，改4秒即時封技；落雷原在輸入前判定，改玩家衝刺／移動後，命中同幀dash可正常免傷。新回歸覆蓋六角色封技／解封、資源倍率、無效／重放決策、拒絕等價、一次領獎／滿法器／貨幣上限、換房／Boss／死亡／重開、原有限事件效果。
+- **148/148模型、59/59 Chromium情境通過**；最終版本標籤更新後8個天劫／原生手勢重跑通過。含可重跑54實戰控制器組合（六角色×三武器×兩種天劫／拒絕）及36完整種子路線。Production build、桌面／iPhone尺寸子路徑的正式天劫／獎勵、資源載入、獨立HTML及diff check通過。package／頁面標記0.6.1。
+- 獨立唯讀QA另跑54實戰與150完整路線，無剩餘確定P1／流程軟鎖；封靈第一次技能約4.033秒。控制器不是人類平衡：部分角色延後施法反而少空招，阿籤等工具角色代價較小；需觀察真實選擇率，不能宣稱封靈一律更難。詳見docs/V06_SLICE2.md、BALANCE_NOTES.md。
+- 四倍CPU合成手機壓力與既有viewport／多指回歸通過；不是實體Safari／Android／Edge測試。使用者尚未回報修補後的實體Safari多指縮放結果，不能把先前「放大發生於多指」誤當修補驗收。
+- GitHub PR查詢／建立實際呼叫仍GraphQL Forbidden，**沒有PR編號**。獨立QA後以正常fast-forward push整合；保留比較入口：https://github.com/mason193199/lingqian-journey/compare/72b4108...v06/optional-trials 。不force。
+- 公開網址：https://mason193199.github.io/lingqian-journey/ 。保留gh-pages root設定。最終交接HEAD部署後須核對version.json sourceCommit與所有dist產物雜湊；若下次已相符就從未完成階段續作。若只差部署，僅補部署，勿重做功能。雲端對公開CDN回查可能仍CONNECT403，Git產物驗證不等於外部HTTP成功。
+- **v0.6仍非整版完成**：下一個切片先做少量可讀地形／一次性秘密探索，然後依人類回饋調Boss／天劫報酬與角色節奏；尚無血契／多天劫疊加、Boss變體。v0.7 NPC劇情／長期挑戰未開始。
+- 續作：fetch最新main/history/AI_HANDOFF/GAME_ROADMAP/未合併分支，核對Pages來源與實機回饋；穩定階段test→fix→retest→commit→push→handoff，不覆蓋另一工作區草稿。
+
+## v0.6.0 第一切片歷史（已由上述v0.6.1接續）
 
 - 最新完整驗收程式commit：**e445305d1662debae145d2321704f93ef6d4cf29**，後續交接文件提交不改遊戲；最終main HEAD應與Pages version.json一致。
 - 先發布緊急手機修補304827b，再於v06/combat-build實作Boss/Build切片，137模型＋54 Chromium情境、production/subpath/standalone、diff check全通過，字級調整後6相關UI/gesture情境重跑通過。
