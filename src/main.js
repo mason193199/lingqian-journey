@@ -1,3 +1,4 @@
+import {canLeaveExploration} from './terrain.js';
 import {TRIALS,trialLabel,trialSkillLock} from './trials.js';
 import {bossStage} from './boss-encounter.js';
 import {buildGuideMarkup} from './build-guide.js';
@@ -24,6 +25,7 @@ import {CHARACTER_GUIDE} from './character-guide.js';
 const canvas=document.querySelector('#game'),ctx=canvas.getContext('2d');
 canvas.width=1280;canvas.height=720;
 const store=new MetaStore();const diagnostics=new URLSearchParams(location.search).has('test');let runId=null,runReward=0,hubTab='characters';
+const explorationUI=document.createElement('aside');explorationUI.className='exploration-banner';explorationUI.hidden=true;explorationUI.innerHTML='<span></span><button data-command="terrain-exit">下一房 F →</button>';document.querySelector('#hud-layer').append(explorationUI);
 const game=new Game();const overlay=document.querySelector('#overlay');
 let last=performance.now(),previous='',sound=!!store.data.settings.sound;
 const controls=createControls(document.querySelector('.game-shell'),{isPlaying:()=>game.state==='playing',onPause:pause,onBlur:()=>{if(game.state==='playing')game.state='paused';}});
@@ -34,7 +36,7 @@ let settingsUI;
 const layout=setupInterface(game,{onToggleHUD:()=>{store.setSetting('hudMode',store.data.settings.hudMode==='full'?'compact':'full');settingsUI?.apply();}});
 settingsUI=setupSettings({store,game,clearInput,onChange:()=>{sound=store.data.settings.sound;audioEngine.unlock();},onOpen:()=>{previous='';},onTutorial:()=>{if(['title','preparing','dead','won'].includes(game.state))startRun();tutorial.start(game,{replay:true});if(game.state==='paused')game.state='playing';previous='';}});
 setupViewport({onBlocked:(blocked)=>{if(blocked&&game.state==='playing')game.state='paused';clearInput();}});
-function startRun(legacy=false){game.reset({...store.runOptions(),build:!legacy,adventure:!legacy,events:!legacy,combatV3:!legacy,encounterV6:!legacy,buildV6:!legacy,trialsV6:!legacy,...(legacy?{character:null}:{})});runId=globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random()}`;runReward=0;lastVfx=0;clearInput();previous='';lastHp=game.player.hp;settingsUI.apply();if(!legacy)tutorial.start(game);else tutorial.skip();tryLandscape();playTone(440,.12);}
+function startRun(legacy=false){game.reset({...store.runOptions(),build:!legacy,adventure:!legacy,events:!legacy,combatV3:!legacy,encounterV6:!legacy,buildV6:!legacy,trialsV6:!legacy,terrainV6:!legacy,...(legacy?{character:null}:{})});runId=globalThis.crypto?.randomUUID?.()||`${Date.now()}-${Math.random()}`;runReward=0;lastVfx=0;clearInput();previous='';lastHp=game.player.hp;settingsUI.apply();if(!legacy)tutorial.start(game);else tutorial.skip();tryLandscape();playTone(440,.12);}
 function prepare(){const oldScroll=overlay.querySelector('.prep-panel')?.scrollTop||0;game.state='preparing';clearInput();previous='';overlay.hidden=false;overlay.innerHTML=preparation();for(const portrait of overlay.querySelectorAll('[data-portrait-id]')){const id=portrait.dataset.portraitId;renderPortrait(portrait.getContext('2d'),id,CHARACTER_GUIDE[id].recommended);}overlay.querySelector('.prep-panel').scrollTop=oldScroll;}
 function pause(){if(game.state==='playing')game.state='paused';else if(game.state==='paused')game.state='playing';clearInput();}
 document.addEventListener('click',e=>{
@@ -47,6 +49,7 @@ document.addEventListener('click',e=>{
  const action=e.target.closest('[data-room-action]')?.dataset.roomAction;if(action){const data={slot:document.querySelector('#altar-slot')?.value,element:document.querySelector('#altar-element')?.value,bagua:document.querySelector('#altar-bagua')?.value};if(game.roomAction(action,data)){clearInput();previous='';}}
  const relicChoice=e.target.closest('[data-relic-choice]')?.dataset.relicChoice;if(relicChoice&&game.chooseRelic(relicChoice)){clearInput();playTone(680,.16);}
  if(command==='evolution-continue'){game.acknowledgeEvolution();clearInput();}
+ if(command==='terrain-exit'&&game.leaveExploration()){clearInput();previous='';}
  if(command==='prepare')prepare();
  const hub=e.target.closest('[data-hub-tab]')?.dataset.hubTab;if(HUB_TABS[hub]){hubTab=hub;prepare();overlay.querySelector('.prep-panel').scrollTop=0;}
  const rule=e.target.closest('[data-rule-fate]')?.dataset.ruleFate;if(rule){store.selectRuleFate(rule);prepare();}
@@ -86,7 +89,7 @@ function screen(){
 }
 let lastHp=100,lastKills=0,lastAttack=0,lastVfx=0,hurtUntil=0;const hudCache={};function writeHUD(key,value,fn){if(hudCache[key]!==value){hudCache[key]=value;fn(value);}}
 function frame(now){const dt=Math.min((now-last)/1000,.04);last=now;const input=controls.read();let inputConsumed=false;if((game.hitStop||0)>0){game.hitStop=Math.max(0,game.hitStop-dt);}else{game.update(dt,input);inputConsumed=true;}game.updateVisual(dt);for(const v of game.vfx){if(v.id>lastVfx){if(v.kind==='critical')playTone(1050,.13,'triangle');else if(['hit','rune','lightning'].includes(v.kind)){const w=game.player.weapon;playTone(w==='sword'?190:w==='talisman'?820:520,.055,w==='sword'?'triangle':'sine');}lastVfx=v.id;}}if(game.player.attackCount!==lastAttack){if(game.player.attackCount>lastAttack){const w=game.player.weapon;playTone(w==='sword'?290:w==='talisman'?640:420,w==='staff'?.2:.07,w==='sword'?'triangle':'sine');}lastAttack=game.player.attackCount;}if(runId&&['won','dead'].includes(game.state)){runReward=store.settleRun({id:runId,kills:game.kills,won:game.state==='won',summary:game.result});runId=null;}document.body.dataset.gameState=game.state;if(game.player.hp<lastHp)playTone(130,.12);if(game.player.hp<lastHp)hurtUntil=now+220;document.querySelector('#health')?.classList.toggle('hurt',now<hurtUntil);lastHp=game.player.hp;if(game.kills>lastKills)playTone(560,.08);lastKills=game.kills;if(inputConsumed||game.state!=='playing')controls.consume();render(ctx,game,now/1000);screen();refreshAltarForm();updateHUD();layout.update();updateTutorial(input);audioEngine.tick(game.state,now/1000,game.enemies.some(e=>e.type==='boss'));updateSynergyToast();requestAnimationFrame(frame);}
-function updateHUD(){const p=game.player;
+function updateHUD(){const p=game.player;explorationUI.hidden=!canLeaveExploration(game);const t=game.run?.terrain;if(t){const message=t.secret.collected?'符匣已尋得 · 準備繼續':'可探索竹台上的符匣，或直接離開';if(explorationUI.firstElementChild.textContent!==message)explorationUI.firstElementChild.textContent=message;}
 writeHUD('hp',`${p.hp}/${p.maxHp}`,()=>document.querySelector('#health').innerHTML=`<span style="width:${p.hp/p.maxHp*100}%"></span><b>${Math.ceil(p.hp)} / ${p.maxHp}</b>`);
 writeHUD('stage',game.notice,v=>document.querySelector('#stage').textContent=v);
 writeHUD('blessing',game.blessing,v=>document.querySelector('#blessings').textContent=v?`✦ ${BLESSINGS[v].name}`:'✧ 尚未得籤');

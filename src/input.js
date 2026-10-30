@@ -1,5 +1,5 @@
 import {installGameGestures} from './gestures.js';
-const BINDINGS={KeyA:'left',ArrowLeft:'left',KeyD:'right',ArrowRight:'right',Space:'jump',KeyW:'jump',ArrowUp:'jump',KeyJ:'attack',KeyZ:'attack',KeyK:'dash',ShiftLeft:'dash',ShiftRight:'dash',KeyX:'dash',KeyE:'skill',KeyL:'skill'};
+const BINDINGS={KeyF:'interact',KeyA:'left',ArrowLeft:'left',KeyD:'right',ArrowRight:'right',Space:'jump',KeyW:'jump',ArrowUp:'jump',KeyJ:'attack',KeyZ:'attack',KeyK:'dash',ShiftLeft:'dash',ShiftRight:'dash',KeyX:'dash',KeyE:'skill',KeyL:'skill'};
 const editable=target=>target?.closest?.('input,textarea,select,[contenteditable=true],dialog[open]');
 // Track physical keys and individual fingers, rather than only logical actions.
 export function createControls(root,{onPause=()=>{},onBlur=()=>{},isPlaying}={}){
@@ -18,5 +18,5 @@ export function createControls(root,{onPause=()=>{},onBlur=()=>{},isPlaying}={})
  for(const type of ['contextmenu','selectstart','dragstart','dblclick'])root.addEventListener(type,e=>{if(!editable(e.target))e.preventDefault();});
  window.addEventListener('blur',()=>{clear();onBlur();});
  document.addEventListener('visibilitychange',()=>{if(document.hidden){clear();onBlur();}});
- return {clear,consume(){edges={};},read(){const active=new Set([...keys].map(k=>BINDINGS[k]));for(const p of pointers.values())active.add(p.action);return {left:active.has('left'),right:active.has('right'),attack:active.has('attack')||!!edges.attack,jump:!!edges.jump,dash:!!edges.dash,skill:!!edges.skill};}};
+ return {clear,consume(){edges={};},read(){const active=new Set([...keys].map(k=>BINDINGS[k]));for(const p of pointers.values())active.add(p.action);return {left:active.has('left'),right:active.has('right'),attack:active.has('attack')||!!edges.attack,jump:!!edges.jump,dash:!!edges.dash,skill:!!edges.skill,interact:!!edges.interact};}};
 }

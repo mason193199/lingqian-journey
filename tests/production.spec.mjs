@@ -30,7 +30,10 @@ try{
   await page.locator('[data-room-action=trial-seal]').click();assert.equal(await page.evaluate(()=>window.__game.useSkill()),false);
   await page.evaluate(()=>{const g=window.__game;for(const e of g.enemies)g.damageEnemy(e,9999);g.update(.01);});
   await page.locator('[data-relic-choice]').first().click();assert.equal(await page.evaluate(()=>window.__game.state),'route');assert.equal(await page.evaluate(()=>window.__game.run.trialsCompleted),1);
-  await page.screenshot({path:`test-results/production-${name}.png`});await context.close();console.log(`PASS production subpath: ${name}, title, real movement, blessing, normal trial/reward, assets`);
+  assert.equal(await page.evaluate(()=>window.__game.terrainV6),true);
+  await page.evaluate(()=>{const g=window.__game;g.run.choices=[{id:'production-terrain',type:'combat',variant:0}];g.chooseRoom('production-terrain');for(const e of g.enemies)g.damageEnemy(e,9999);g.update(.01);});
+  await page.locator('[data-command=terrain-exit]').click();assert.equal(await page.evaluate(()=>window.__game.state),'route');
+  await page.screenshot({path:`test-results/production-${name}.png`});await context.close();console.log(`PASS production subpath: ${name}, title, real movement, blessing, normal trial/reward, terrain/exit, assets`);
  }
  const context=await browser.newContext();const page=await context.newPage();await page.goto('http://127.0.0.1:5176'+prefix+'lingqian-journey.html');await page.locator('[data-command=start]').click();await context.close();console.log('PASS standalone HTML under project subpath');assert.deepEqual(failures,[]);
 }finally{await browser.close();await new Promise(r=>server.close(r));}

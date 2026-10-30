@@ -154,3 +154,6 @@ body[data-touch=true] .trial-panel .route-grid{gap:8px;margin:8px 0}
 body[data-touch=true] .trial-panel .route-grid button{padding:9px}
 body[data-touch=true] .trial-panel .relic-icon{font-size:24px}
 body[data-touch=true] .trial-panel .route-grid p{font-size:11px;margin:5px 0}
+.exploration-banner{position:absolute;z-index:6;top:82px;left:50%;transform:translateX(-50%);width:min(46%,340px);padding:8px 10px;border:2px solid #c7bd8b;background:#193e40f5;box-shadow:0 3px #152f38;color:#f5e5b5;text-align:center;font-size:12px;pointer-events:auto}
+.exploration-banner[hidden]{display:none}.exploration-banner span{display:block;margin-bottom:5px;line-height:1.5}.exploration-banner button{min-height:36px;max-width:100%;padding:5px 12px;background:#e8d09a;color:#254348;border:1px solid #fff0c1;font:inherit;touch-action:manipulation;cursor:pointer}
+body[data-touch=true] .exploration-banner{top:80px;width:min(44%,300px);font-size:10px;padding:6px}
