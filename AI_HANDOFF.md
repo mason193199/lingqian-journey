@@ -1,8 +1,25 @@
-# AI 開發交接 — v0.6 第二切片
+# AI 開發交接 — v0.6 第三切片
 
-日期：2026-10-28。
+日期：2026-10-30。
 
-## 目前最新：v0.6.1 自選單房天劫已驗收
+## 目前最新：v0.6.2 竹影藏籤已驗收
+
+- 最新完整驗收程式commit：**8e6e6107c89cd74675032aae8f5544f9d6b86d24**。後續只有交接文件更新；最終main HEAD需與gh-pages/version.json sourceCommit一致。
+- 開始時fetch main3a7cc07、讀history／本文件／GAME_ROADMAP，確認沒有新main工作；於獨立**v06/terrain-secrets**分支實作，保留原工作區草稿及舊穩定分支。
+- 正式Run新增terrainV6，僅非初戰普通房：兩種單向竹台布局、正常跳躍穿底／下降掃掠落地、上層符匣觸碰得12局內靈錢，每房一次、999上限；完整地面直通可跳過探索。敵人仍地面路徑，遠程會瞄準高處；不改天劫／Boss／事件／初戰。
+- 清場後不立刻切選路，先清敵彈／預警／負面狀態（保留護盾／霸體）後繼續正常移動。可登台找匣，也可**F或手機下一房**直接進三選一路線。ready／roomId／零存活敵人驗證；F邊緣觸發，提前按住不自動跳過。原clearRoom與五帝錢等仍在離開時一次結算。
+- src/terrain.js集中參數／幾何／收取／退出；src/terrain-art.js原創像素竹台／符匣／符紙；groundY供教學及角色呈現使用，落地回饋沿用COMBAT_FEEL。新字型／圖檔無外部依賴，ASSET_LICENSES已記錄。
+- **155/155模型＋65/65 Chromium情境通過**，最後版本／參數來源更新後9個地形／多指手勢情境重跑通過。production build／桌面與iPhone尺寸子路徑的正式天劫、地形清場與退出／資源載入、獨立HTML、diff check通過；package／頁面標記0.6.2。
+- 可重跑tests/terrain-balance-v06.test.js含72個六角色×三武器×兩布局×兩步長正常探索操作、36個不改玩家血傷的實際戰鬥後登台／收匣／退出；另有高速落地、穿底、禁止空中連跳、觸碰條件／上限、不能跳戰／重複退出及Boss／重開不殘留回歸。
+- 獨立唯讀QA另驗240局種子／324地形房退出，無確定P1或流程軟鎖。此項用除錯傷害僅驗流程；36實際戰鬥約2.17–4.05秒、91–100HP，不等於真人平衡。高台可躲地面霧團，遠程仍瞄準高處，需要真人觀察站樁風險。詳見docs/V06_SLICE3.md／BALANCE_NOTES.md。
+- 已檢視844×390手機渲染截圖：竹台、符匣、出口與觸控鍵可見。640×320／844×390／915×412觸控登台／出口，以及桌面F／按住F不穿透回歸通過。不是實體iPhone／Android／Edge驗收；多指防放大仍只有模擬與事件驗證，沒有使用者修補後真機確認。
+- GitHub PR建立本輪實際呼叫仍GraphQL Forbidden，**無PR編號**；獨立QA後正常fast-forward main，不force。保留比較入口：https://github.com/mason193199/lingqian-journey/compare/3a7cc07...v06/terrain-secrets 。
+- 公開網址：https://mason193199.github.io/lingqian-journey/ 。部署最終handoff HEAD後需核對Pages version.json與6個dist產物；若下次已一致就接下一階段，不重做。若只有部署未完成只補部署；直接CDN可能仍被代理CONNECT403阻擋，不能將Git驗證說成公開HTTP成功。
+- 存檔鍵／schema未改，永久進度與設定回歸通過。平台／符匣／尋獲數只屬本局，仍不保存進行中Run；刷新目前Run會結束，與原規則一致。
+- **v0.6尚未整版完成**：下一切片優先角色／武器動作節奏深化與真人Build／天劫／高台平衡，再考慮更多探索；未做移動平台、破壞物、秘密通道、完整生成地圖、Boss變體或完整天劫組合。v0.7劇情／熟練度／挑戰未開始。
+- 續作先fetch最新main/history/AI_HANDOFF/GAME_ROADMAP/未整合分支，核對Pages與實機回饋。穩定階段test→fix→retest→commit→push→handoff，不動另一工作區草稿。
+
+## v0.6.1 第二切片歷史（已由上述v0.6.2接續）
 
 - 最新完整驗收程式commit：**c05494768f7ab1844b37252b403e1188eccde58d**。後續只更新交接；最終main HEAD應與gh-pages/version.json的sourceCommit一致。
 - 從72b4108續作，先確認遠端main／Pages來源一致，保留另一工作區草稿及既有穩定分支。新分支**v06/optional-trials**；未重做手機防縮放、Boss／Build等已完成項目。
